@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_finance_transfer_list" model="ir.ui.view">
+        <field name="name">finance.transfer.list</field>
+        <field name="model">finance.transfer</field>
+        <field name="arch" type="xml">
+            <list string="Transfers"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="from_register_id"/>
+                <field name="to_register_id"/>
+                <field name="amount"/>
+                <field name="from_currency_id" column_invisible="1"/>
+                <field name="amount_to" optional="show"/>
+                <field name="to_currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_finance_transfer_form" model="ir.ui.view">
+        <field name="name">finance.transfer.form</field>
+        <field name="model">finance.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Transfer">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_draft" string="Reset to Draft" type="object"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state == 'cancelled'"
+                            confirm="Cancel this transfer?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <field name="from_currency_id" invisible="1"/>
+                    <field name="to_currency_id" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="from_register_id" options="{'no_create': True}"/>
+                            <field name="to_register_id" options="{'no_create': True}"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="amount_to" readonly="1"
+                                   invisible="from_currency_id == to_currency_id"/>
+                        </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1" placeholder="Optional note…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_finance_transfer" model="ir.actions.act_window">
+        <field name="name">Transfers</field>
+        <field name="res_model">finance.transfer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

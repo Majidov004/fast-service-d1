@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── List ──────────────────────────────────────────────────────── -->
+    <record id="view_finance_cash_move_list" model="ir.ui.view">
+        <field name="name">finance.cash.move.list</field>
+        <field name="model">finance.cash.move</field>
+        <field name="arch" type="xml">
+            <list string="Cash Moves"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="register_id"/>
+                <field name="category_id"/>
+                <field name="amount"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount_register" optional="show"/>
+                <field name="register_currency_id" column_invisible="1"/>
+                <field name="payment_method_id" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Form ──────────────────────────────────────────────────────── -->
+    <record id="view_finance_cash_move_form" model="ir.ui.view">
+        <field name="name">finance.cash.move.form</field>
+        <field name="model">finance.cash.move</field>
+        <field name="arch" type="xml">
+            <form string="Cash Move">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_draft" string="Reset to Draft" type="object"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state == 'cancelled'"
+                            confirm="Cancel this document?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <!-- hidden helper fields -->
+                    <field name="move_type" invisible="1"/>
+                    <field name="category_direction" invisible="1"/>
+                    <field name="detail_type" invisible="1"/>
+                    <field name="register_currency_id" invisible="1"/>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="register_id" options="{'no_create': True}"/>
+                            <field name="date"/>
+                            <field name="payment_method_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" options="{'no_create': True}"/>
+                            <field name="amount"/>
+                            <field name="amount_register" readonly="1"
+                                   invisible="currency_id == register_currency_id"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Category">
+                            <field name="category_id"
+                                   domain="[('direction', '=', category_direction)]"
+                                   options="{'no_quick_create': True}"/>
+                            <field name="expense_id"
+                                   invisible="detail_type != 'expense'"
+                                   required="detail_type == 'expense'"/>
+                            <field name="employee_id"
+                                   invisible="detail_type != 'employee'"
+                                   required="detail_type == 'employee'"/>
+                            <field name="student_id"
+                                   invisible="detail_type != 'student'"
+                                   required="detail_type == 'student'"/>
+                            <field name="partner_id"
+                                   invisible="detail_type != 'partner'"
+                                   required="detail_type == 'partner'"/>
+                        </group>
+                    </group>
+
+                    <group string="Note">
+                        <field name="note" nolabel="1" placeholder="Optional note…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Search ────────────────────────────────────────────────────── -->
+    <record id="view_finance_cash_move_search" model="ir.ui.view">
+        <field name="name">finance.cash.move.search</field>
+        <field name="model">finance.cash.move</field>
+        <field name="arch" type="xml">
+            <search string="Cash Moves">
+                <field name="name"/>
+                <field name="register_id"/>
+                <field name="category_id"/>
+                <field name="partner_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Cash In" name="cash_in" domain="[('move_type', '=', 'cash_in')]"/>
+                <filter string="Cash Out" name="cash_out" domain="[('move_type', '=', 'cash_out')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Register" name="g_register" context="{'group_by': 'register_id'}"/>
+                    <filter string="Category" name="g_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Status" name="g_state" context="{'group_by': 'state'}"/>
+                    <filter string="Date" name="g_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Actions ───────────────────────────────────────────────────── -->
+    <record id="action_finance_cash_in" model="ir.actions.act_window">
+        <field name="name">Cash In</field>
+        <field name="res_model">finance.cash.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'cash_in')]</field>
+        <field name="context">{'default_move_type': 'cash_in'}</field>
+        <field name="search_view_id" ref="view_finance_cash_move_search"/>
+    </record>
+
+    <record id="action_finance_cash_out" model="ir.actions.act_window">
+        <field name="name">Cash Out</field>
+        <field name="res_model">finance.cash.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'cash_out')]</field>
+        <field name="context">{'default_move_type': 'cash_out'}</field>
+        <field name="search_view_id" ref="view_finance_cash_move_search"/>
+    </record>
+
+</odoo>

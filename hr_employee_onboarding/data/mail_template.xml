@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="mail_template_onboarding_invite" model="mail.template">
+            <field name="name">HR Onboarding – Login Invite</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">Welcome to Odoo – Your Login Details</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;
+            border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+
+    <!-- Header -->
+    <div style="background-color: #875A7B; padding: 30px; text-align: center;">
+        <h1 style="color: #ffffff; margin: 0; font-size: 24px;">
+            Welcome to Odoo 🎉
+        </h1>
+    </div>
+
+    <!-- Body -->
+    <div style="padding: 30px; background: #ffffff;">
+        <p style="font-size: 16px;">Salam <strong>{{ ctx.get('employee_name', object.name) }}</strong>,</p>
+
+        <p>Odoo hesabınız hazırdır. Aşağıdakı məlumatlarla sistemə daxil ola bilərsiniz:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <tr>
+                <td style="padding: 10px; background: #f9f9f9; border: 1px solid #e0e0e0;
+                           font-weight: bold; width: 140px;">🔗 Link</td>
+                <td style="padding: 10px; border: 1px solid #e0e0e0;">
+                    <a href="{{ ctx.get('login_url') }}" style="color: #875A7B;">
+                        {{ ctx.get('login_url') }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; background: #f9f9f9; border: 1px solid #e0e0e0;
+                           font-weight: bold;">👤 İstifadəçi adı</td>
+                <td style="padding: 10px; border: 1px solid #e0e0e0;">
+                    {{ object.login }}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; background: #f9f9f9; border: 1px solid #e0e0e0;
+                           font-weight: bold;">🔑 Parol</td>
+                <td style="padding: 10px; border: 1px solid #e0e0e0;
+                           font-size: 18px; letter-spacing: 2px; font-weight: bold; color: #875A7B;">
+                    {{ ctx.get('password') }}
+                </td>
+            </tr>
+        </table>
+
+        <div style="background: #fff8e1; border-left: 4px solid #ffc107;
+                    padding: 12px 16px; margin: 20px 0; border-radius: 4px;">
+            <strong>⚠️ Vacib:</strong> Daxil olduqdan sonra öz profilinizi doldurun
+            və <strong>Complete</strong> düyməsinə basın.
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ ctx.get('login_url') }}"
+               style="background-color: #875A7B; color: #ffffff; padding: 14px 32px;
+                      text-decoration: none; border-radius: 6px; font-size: 16px;
+                      font-weight: bold; display: inline-block;">
+                Odoo-ya Daxil Ol
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background: #f5f5f5; padding: 16px; text-align: center;
+                font-size: 12px; color: #999;">
+        Bu məktub avtomatik göndərilib. Zəhmət olmasa cavab verməyin.
+    </div>
+
+</div>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

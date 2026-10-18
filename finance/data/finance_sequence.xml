@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_finance_cash_in" model="ir.sequence">
+            <field name="name">Finance Cash In</field>
+            <field name="code">finance.cash.in</field>
+            <field name="prefix">CIN/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_finance_cash_out" model="ir.sequence">
+            <field name="name">Finance Cash Out</field>
+            <field name="code">finance.cash.out</field>
+            <field name="prefix">COUT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_finance_transfer" model="ir.sequence">
+            <field name="name">Finance Transfer</field>
+            <field name="code">finance.transfer</field>
+            <field name="prefix">TRF/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_finance_student_charge" model="ir.sequence">
+            <field name="name">Finance Student Charge</field>
+            <field name="code">finance.student.charge</field>
+            <field name="prefix">BORC/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_finance_payment_promise" model="ir.sequence">
+            <field name="name">Finance Payment Promise</field>
+            <field name="code">finance.payment.promise</field>
+            <field name="prefix">VED/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+    </data>
+</odoo>

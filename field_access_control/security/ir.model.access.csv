@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_field_access_config_manager,field.access.config.manager,model_field_access_config,group_field_access_manager,1,1,1,1
+access_field_access_line_manager,field.access.line.manager,model_field_access_line,group_field_access_manager,1,1,1,1
+access_field_access_config_user,field.access.config.user,model_field_access_config,base.group_system,1,0,0,0
+access_field_access_line_user,field.access.line.user,model_field_access_line,base.group_system,1,0,0,0

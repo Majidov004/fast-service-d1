@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contact_note_user,access_contact_note_user,model_contact_note,base.group_system,1,1,1,1
+access_contact_note_wizard_user,access_contact_note_wizard_user,model_contact_note_wizard,base.group_system,1,1,1,1

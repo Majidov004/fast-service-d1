@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kök menyu (yalnız Settings qrupu görsün) -->
+    <menuitem id="menu_access_manager_root"
+              name="İcazə İdarəetməsi"
+              sequence="100"
+              groups="base.group_system"
+              web_icon="access_manager,static/description/icon.png"/>
+
+    <!-- Vəzifələr (Rollar) menyusu -->
+    <menuitem id="menu_access_role"
+              name="Vəzifələr (Rollar)"
+              parent="menu_access_manager_root"
+              action="action_access_role"
+              sequence="5"
+              groups="base.group_system"/>
+
+    <!-- Konfiqurasiya menyusu (fərdi istisna) -->
+    <menuitem id="menu_access_config"
+              name="İstifadəçi İcazələri"
+              parent="menu_access_manager_root"
+              action="action_access_config"
+              sequence="10"
+              groups="base.group_system"/>
+
+</odoo>

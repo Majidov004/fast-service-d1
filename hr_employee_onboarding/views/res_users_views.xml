@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form_onboarding" model="ir.ui.view">
+        <field name="name">res.users.form.onboarding</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+
+            <!-- "Send an Invitation Email" düyməsinin yanına öz düyməmizi əlavə edirik -->
+            <xpath expr="//header" position="inside">
+                <button name="action_send_onboarding_invite"
+                        string="Send Onboarding Invite"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-envelope"
+                        invisible="onboarding_done == True"
+                        confirm="Bu istifadəçiyə login məlumatları göndəriləcək. Davam edilsin?"/>
+
+                <button name="action_send_onboarding_invite"
+                        string="Re-send Onboarding Invite"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-envelope"
+                        invisible="onboarding_done == False"/>
+
+                <!-- Onboarding tamamlanıb badge -->
+                <span invisible="not onboarding_done"
+                      class="badge text-bg-success ms-2"
+                      style="font-size:13px; padding: 6px 12px;">
+                    ✅ Onboarding Done
+                </span>
+            </xpath>
+
+            <!-- Hidden field -->
+            <xpath expr="//field[@name='login']" position="after">
+                <field name="onboarding_done" invisible="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

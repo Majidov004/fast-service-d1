@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Question Bank — List ──────────────────────────────────────────── -->
+    <record id="view_trail_lesson_question_list" model="ir.ui.view">
+        <field name="name">trail.lesson.question.list</field>
+        <field name="model">trail.lesson.question</field>
+        <field name="arch" type="xml">
+            <list string="Questions" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name" placeholder="Title…"/>
+                <field name="question" placeholder="Question text…"/>
+                <field name="translation" placeholder="AZ / RU…" optional="show"/>
+                <field name="stage"/>
+                <field name="exam_number" optional="show"
+                       readonly="stage != 'exam'"/>
+                <field name="level"/>
+                <field name="system_choice"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Question Bank — Form ──────────────────────────────────────────── -->
+    <record id="view_trail_lesson_question_form" model="ir.ui.view">
+        <field name="name">trail.lesson.question.form</field>
+        <field name="model">trail.lesson.question</field>
+        <field name="arch" type="xml">
+            <form string="Question">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" string="Title"/>
+                        <h1><field name="name" placeholder="e.g. Daily routine"/></h1>
+                    </div>
+                    <group>
+                        <group string="Where is it used?">
+                            <field name="stage"/>
+                            <field name="exam_number"
+                                   invisible="stage != 'exam'"/>
+                            <field name="level"
+                                   placeholder="All levels"/>
+                            <field name="system_choice"
+                                   placeholder="All programs"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Content">
+                            <field name="question" placeholder="What do you ask the student?"/>
+                            <field name="translation" placeholder="Translation (AZ/RU)…"/>
+                        </group>
+                    </group>
+                    <group string="Details / Expected Answer">
+                        <field name="note" nolabel="1"
+                               placeholder="Expected answer, grammar point, hints for the teacher…"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Question Bank — Search ────────────────────────────────────────── -->
+    <record id="view_trail_lesson_question_search" model="ir.ui.view">
+        <field name="name">trail.lesson.question.search</field>
+        <field name="model">trail.lesson.question</field>
+        <field name="arch" type="xml">
+            <search string="Search Questions">
+                <field name="name" string="Title"/>
+                <field name="question"/>
+                <filter name="stage_trial" string="Trial Lesson"
+                        domain="[('stage', '=', 'trial')]"/>
+                <filter name="stage_exam" string="Exam"
+                        domain="[('stage', '=', 'exam')]"/>
+                <separator/>
+                <filter name="inactive" string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <group string="Group By">
+                    <filter name="group_by_stage" string="Stage"
+                            context="{'group_by': 'stage'}"/>
+                    <filter name="group_by_exam" string="Exam #"
+                            context="{'group_by': 'exam_number'}"/>
+                    <filter name="group_by_level" string="Level"
+                            context="{'group_by': 'level'}"/>
+                    <filter name="group_by_system" string="Program / System"
+                            context="{'group_by': 'system_choice'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ────────────────────────────────────────────────────────── -->
+    <record id="action_trail_lesson_question" model="ir.actions.act_window">
+        <field name="name">Questions</field>
+        <field name="res_model">trail.lesson.question</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_trail_lesson_question_search"/>
+        <field name="context">{'search_default_group_by_stage': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first question</p>
+            <p>
+                Questions stored here are pulled automatically into the
+                <b>Complete Trial</b> wizard (stage = Trial Lesson) and into the
+                <b>Exam</b> popup of a training group (stage = Exam).
+            </p>
+        </field>
+    </record>
+
+</odoo>

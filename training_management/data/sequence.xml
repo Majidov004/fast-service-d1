@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Training Group Name -->
+        <record id="seq_training_group" model="ir.sequence">
+            <field name="name">Training Group Sequence</field>
+            <field name="code">training.group</field>
+            <field name="prefix">TRG/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+        </record>
+    </data>
+</odoo>

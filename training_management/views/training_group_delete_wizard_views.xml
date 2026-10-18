@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_group_delete_wizard_form" model="ir.ui.view">
+        <field name="name">training.group.delete.wizard.form</field>
+        <field name="model">training.group.delete.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Delete Training Group">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Warning!</strong>
+                    <p>
+                        You are about to delete the group <strong><field name="group_id"/></strong>.
+                        This will also permanently delete
+                        <strong><field name="lesson_count"/> lesson record(s)</strong>.
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <footer>
+                    <button string="Yes, Delete" name="action_confirm_delete"
+                            type="object" class="btn-danger"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

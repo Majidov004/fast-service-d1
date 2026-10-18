@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        `mail.Composer.sendButton` şablonuna Odoo-nun voice_message modulu artıq
+        <VoiceRecorder t-if="thread?.model === 'discuss.channel' and allowUpload" .../>
+        düyməsini əlavə edib. Burada yalnız həmin şərti genişləndiririk ki, düymə
+        chatter-də (Log note / Send message) də görünsün.
+    -->
+    <t t-inherit="mail.Composer.sendButton" t-inherit-mode="extension">
+        <xpath expr="//VoiceRecorder" position="attributes">
+            <attribute name="t-if">hasVoiceNoteRecorder</attribute>
+        </xpath>
+    </t>
+
+</templates>

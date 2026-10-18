@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_training_group_user,training.group.user,model_training_group,base.group_system,1,1,1,1
+access_training_schedule_line_user,training.schedule.line.user,model_training_schedule_line,base.group_system,1,1,1,1
+access_training_student_line_user,training.student.line.user,model_training_student_line,base.group_system,1,1,1,1
+access_training_group_delete_wizard_user,training.group.delete.wizard.user,model_training_group_delete_wizard,base.group_system,1,1,1,1

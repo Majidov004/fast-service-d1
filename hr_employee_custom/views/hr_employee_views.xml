@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="view_language_level_tree" model="ir.ui.view">
+        <field name="name">hr.language.level.tree</field>
+        <field name="model">hr.language.level</field>
+        <field name="arch" type="xml">
+            <list string="Language Levels">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_language_level_form" model="ir.ui.view">
+        <field name="name">hr.language.level.form</field>
+        <field name="model">hr.language.level</field>
+        <field name="arch" type="xml">
+            <form string="Language Level">
+                <sheet>
+                    <group>
+                        <field name="name" string="Level"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_language_level" model="ir.actions.act_window">
+        <field name="name">Language Levels</field>
+        <field name="res_model">hr.language.level</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_language_level_config"
+        name="Language Level Configurator"
+        parent="hr.menu_config_employee"
+        action="action_language_level"
+        sequence="20"/>
+
+    <!-- hr.language lookup -->
+    <record id="view_hr_language_tree" model="ir.ui.view">
+        <field name="name">hr.language.tree</field>
+        <field name="model">hr.language</field>
+        <field name="arch" type="xml">
+            <list string="Languages" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_language" model="ir.actions.act_window">
+        <field name="name">Languages</field>
+        <field name="res_model">hr.language</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_hr_language_config"
+        name="Languages"
+        parent="hr.menu_config_employee"
+        action="action_hr_language"
+        sequence="21"/>
+
+    <!-- hr.certificate.type lookup -->
+    <record id="view_hr_certificate_type_tree" model="ir.ui.view">
+        <field name="name">hr.certificate.type.tree</field>
+        <field name="model">hr.certificate.type</field>
+        <field name="arch" type="xml">
+            <list string="Certificate Types" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_certificate_type" model="ir.actions.act_window">
+        <field name="name">Certificate Types</field>
+        <field name="res_model">hr.certificate.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_hr_certificate_type_config"
+        name="Certificate Types"
+        parent="hr.menu_config_employee"
+        action="action_hr_certificate_type"
+        sequence="22"/>
+
+    <!-- hr.faculty lookup -->
+    <record id="view_hr_faculty_tree" model="ir.ui.view">
+        <field name="name">hr.faculty.tree</field>
+        <field name="model">hr.faculty</field>
+        <field name="arch" type="xml">
+            <list string="Faculties" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_faculty" model="ir.actions.act_window">
+        <field name="name">Faculties</field>
+        <field name="res_model">hr.faculty</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_hr_faculty_config"
+        name="Faculties"
+        parent="hr.menu_config_employee"
+        action="action_hr_faculty"
+        sequence="23"/>
+
+    <record id="view_employee_form_teacher_main" model="ir.ui.view">
+        <field name="name">hr.employee.form.teacher.main</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button string="Save" type="object" special="save" class="btn-primary" icon="fa-floppy-o"/>
+                <button string="Cancel" type="object" special="cancel" class="btn-secondary" icon="fa-times"/>
+            </xpath>
+
+            <xpath expr="//button[@type='action' and @name='250']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='parent_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='coach_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='job_title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='job_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group" position="replace">
+                <group>
+                    <group string="Contact Information">
+                        <field name="work_phone"    string="Phone"         widget="phone"/>
+                        <field name="mobile_phone"  string="WhatsApp"      widget="phone"/>
+                        <field name="work_email"    string="Email"         widget="email"/>
+                        <field name="private_email" string="Private Email" widget="email"/>
+                        <field name="private_phone" string="Private Phone" widget="phone"/>
+                    </group>
+                    <group string="Personal Information">
+                        <field name="birthday"     string="Date of Birth"/>
+                        <field name="x_school_id"  string="School / University"/>
+                        <field name="x_faculty_id" string="Faculty"/>
+                        <field name="x_study_year" string="Course / Year"/>
+                        <field name="certificate"  string="Education Level"/>
+                    </group>
+                </group>
+                <group string="Teacher Information">
+                    <group>
+                        <field name="x_language_levels"
+                               string="Teaching Levels"
+                               widget="many2many_tags"/>
+                        <field name="x_lesson_type"
+                               string="Lesson Type"/>
+                    </group>
+                    <group>
+                        <field name="x_start_date"
+                               string="Start Date"/>
+                        <field name="x_active_group_count"
+                               string="Active Groups" readonly="1"/>
+                        <field name="x_has_active_group" invisible="1"/>
+                        <field name="category_ids"
+                               widget="many2many_tags"
+                               string="Tags"
+                               placeholder="Add tags..."/>
+                    </group>
+                </group>
+                <group string="Available Days &amp; Hours">
+                    <field name="x_availability_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="day_of_week" string="Day"/>
+                            <field name="time_from"   string="From" widget="float_time"/>
+                            <field name="time_to"     string="To"   widget="float_time"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Teacher Questions" name="x_teacher_questions_tab">
+
+                    <separator string="Languages Known (which language at which level)"/>
+                    <field name="x_language_line_ids" nolabel="1"
+                           widget="employee_language_table"/>
+
+                    <separator string="Work Experience (where, what, how long)"/>
+                    <field name="x_work_exp_ids" nolabel="1"
+                           widget="employee_work_table"/>
+
+                    <separator string="Volunteer Experience (where, what, how long)"/>
+                    <field name="x_volunteer_ids" nolabel="1"
+                           widget="employee_volunteer_table"/>
+
+                    <separator string="English Teaching Experience"/>
+                    <field name="x_has_english_teaching"
+                           string="Has English teaching experience?"/>
+                    <field name="x_english_teaching_ids" nolabel="1"
+                           widget="employee_english_table"
+                           invisible="not x_has_english_teaching"/>
+
+                    <separator string="Certificates"/>
+                    <field name="x_certificate_ids" nolabel="1"
+                           widget="employee_certificate_table"/>
+
+                    <separator string="Strong Skills &amp; Knowledge"/>
+                    <field name="x_strong_skills" nolabel="1"
+                           placeholder="List the strong knowledge and skills..."/>
+
+                </page>
+                <page string="Training Groups" name="x_groups_tab">
+                    <field name="x_group_ids" nolabel="1" readonly="1">
+                        <list decoration-success="state == 'in_progress'"
+                              decoration-warning="state == 'pending'"
+                              decoration-muted="state == 'done'">
+                            <field name="name"/>
+                            <field name="training_start_date"/>
+                            <field name="lesson_count"/>
+                            <field name="student_count"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'in_progress'"
+                                   decoration-warning="state == 'pending'"
+                                   decoration-muted="state == 'done'"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Notes" name="x_notes_tab">
+                    <field name="x_notes"
+                           string="Notes"
+                           placeholder="Additional notes about the teacher..."/>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_employee_hide_resume" model="ir.ui.view">
+        <field name="name">hr.employee.hide.resume</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='public']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_hide_hr_settings" model="ir.ui.view">
+        <field name="name">hr.employee.hide.hr.settings</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='hr_settings']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_hide_personal_info" model="ir.ui.view">
+        <field name="name">hr.employee.hide.personal.info</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='personal_information']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search filter: müəllimin aktiv qrupu var / yoxdur -->
+    <record id="view_employee_filter_active_group" model="ir.ui.view">
+        <field name="name">hr.employee.filter.active.group</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="has_active_group" string="Has Active Group"
+                        domain="[('x_has_active_group', '=', True)]"/>
+                <filter name="no_active_group" string="No Active Group"
+                        domain="[('x_has_active_group', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</data>
+</odoo>

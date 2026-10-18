@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add the payment register + total-to-pay fields to the Payment & Amount
+         group of the trial-completion wizard (the whole group is hidden unless
+         decision == 'joining'). -->
+    <record id="view_trail_lesson_complete_wizard_form_finance" model="ir.ui.view">
+        <field name="name">trail.lesson.complete.wizard.form.finance</field>
+        <field name="model">trail.lesson.complete.wizard</field>
+        <field name="inherit_id" ref="trail_lesson.view_trail_lesson_complete_wizard_form"/>
+        <field name="arch" type="xml">
+            <!-- Total Amount to Pay shown before the "paying now" amount; visible
+                 for both Full and Deposit. -->
+            <xpath expr="//field[@name='payment_amount']" position="before">
+                <field name="total_payment_amount"
+                       invisible="not payment_type"
+                       required="payment_type in ['full', 'deposit']"/>
+            </xpath>
+            <!-- Payment Amount = amount paid now: only meaningful for Deposit.
+                 For Full payment it is auto-filled from the total in code. -->
+            <xpath expr="//field[@name='payment_amount']" position="attributes">
+                <attribute name="invisible">payment_type != 'deposit'</attribute>
+                <attribute name="required">payment_type == 'deposit'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_amount']" position="after">
+                <field name="register_id" options="{'no_create': True}"
+                       invisible="not payment_type"
+                       required="payment_type in ['full', 'deposit']"/>
+                <field name="promise_due_date"
+                       invisible="payment_type != 'deposit'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <!-- Staff-dashboard filtr stilində combobox + Odoo-vari "Create" sətri -->
+  <t t-name="hr_employee_custom.EmployeeCombo">
+    <div class="o_ecombo" t-ref="root">
+      <button type="button" t-attf-class="o_ecombo_trigger {{ state.open ? 'o_open' : '' }}"
+              t-on-click="toggle">
+        <span t-attf-class="o_ecombo_value {{ isPlaceholder ? 'o_ecombo_ph' : '' }}">
+          <t t-esc="displayLabel"/>
+        </span>
+        <i class="fa fa-angle-down o_ecombo_caret"/>
+      </button>
+      <div t-if="state.open" class="o_ecombo_menu">
+        <input type="text" class="o_ecombo_search" t-ref="input"
+               t-att-value="state.search" placeholder="Search…"
+               t-on-input="onSearch" t-on-keydown="onKeydown"/>
+        <div class="o_ecombo_list">
+          <div t-foreach="filtered" t-as="opt" t-key="opt.id"
+               t-attf-class="o_ecombo_opt {{ opt.name === props.displayName ? 'o_active' : '' }}"
+               t-on-click="() => this.choose(opt)">
+            <span class="o_ecombo_opt_label"><t t-esc="opt.name"/></span>
+            <i t-if="opt.name === props.displayName" class="fa fa-check o_ecombo_check"/>
+          </div>
+          <div t-if="filtered.length === 0 and !canCreate" class="o_ecombo_empty">No results</div>
+          <div t-if="canCreate" class="o_ecombo_create" t-on-click="create">
+            <i class="fa fa-plus me-1"/> Create "<t t-esc="state.search.trim()"/>"
+          </div>
+        </div>
+        <div t-if="!isPlaceholder" class="o_ecombo_clear" t-on-click="clearValue">
+          <i class="fa fa-times me-1"/> Clear
+        </div>
+      </div>
+    </div>
+  </t>
+
+  <t t-name="hr_employee_custom.EmployeeTable">
+    <div class="o_emp_table">
+
+      <div t-if="!resId" class="o_emp_table_hint">
+        <i class="fa fa-info-circle me-1"/> Save the employee first to add entries.
+      </div>
+
+      <t t-else="">
+        <table class="o_emp_tbl">
+          <thead>
+            <tr>
+              <th t-foreach="config.columns" t-as="col" t-key="col.name"><t t-esc="col.label"/></th>
+              <th class="o_emp_tbl_act"/>
+            </tr>
+          </thead>
+          <tbody>
+            <tr t-foreach="state.rows" t-as="row" t-key="row.id">
+              <td t-foreach="config.columns" t-as="col" t-key="col.name">
+                <t t-if="col.type === 'combo'">
+                  <EmployeeCombo
+                      options="selectOptions[col.name] || []"
+                      displayName="cellText(row, col)"
+                      placeholder="'Select…'"
+                      onChoose="(opt) => this.onComboChoose(row, col, opt)"
+                      onCreate="(name) => this.onComboCreate(row, col, name)"
+                      onClear="() => this.onComboClear(row, col)"/>
+                </t>
+                <t t-else="">
+                  <input type="text" class="o_emp_input"
+                         t-att-value="cellText(row, col)"
+                         t-att-placeholder="col.label"
+                         t-on-change="(ev) => this.onCell(row, col, ev.target.value)"/>
+                </t>
+              </td>
+              <td class="o_emp_tbl_act">
+                <button class="o_emp_del" type="button" title="Delete"
+                        t-on-click="() => this.deleteRow(row)">
+                  <i class="fa fa-trash-o"/>
+                </button>
+              </td>
+            </tr>
+            <tr t-if="state.rows.length === 0">
+              <td t-att-colspan="config.columns.length + 1" class="o_emp_empty">No entries yet.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button class="o_emp_add" type="button" t-on-click="() => this.addRow()">
+          <i class="fa fa-plus me-1"/><t t-esc="config.addLabel"/>
+        </button>
+      </t>
+
+    </div>
+  </t>
+
+</templates>

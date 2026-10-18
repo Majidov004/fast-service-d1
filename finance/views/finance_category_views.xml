@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_finance_category_list" model="ir.ui.view">
+        <field name="name">finance.category.list</field>
+        <field name="model">finance.category</field>
+        <field name="arch" type="xml">
+            <list string="Categories">
+                <field name="name"/>
+                <field name="direction"/>
+                <field name="detail_type"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_finance_category_form" model="ir.ui.view">
+        <field name="name">finance.category.form</field>
+        <field name="model">finance.category</field>
+        <field name="arch" type="xml">
+            <form string="Category">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Salary"/></h1>
+                    </div>
+                    <group>
+                        <field name="direction"/>
+                        <field name="detail_type"/>
+                        <field name="active"/>
+                    </group>
+                    <div class="text-muted">
+                        <p>Detail Type sənəddə açılacaq əlavə sahəni təyin edir:
+                           <b>Expense Item</b> → Xərc maddəsi, <b>Employee</b> → işçi,
+                           <b>Student</b> → tələbə, <b>Partner</b> → tərəf-müqabil,
+                           <b>None</b> → əlavə sahə yoxdur.</p>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_finance_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">finance.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

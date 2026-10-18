@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_partner_notes_tab" model="ir.ui.view">
+      <field name="name">res.partner.notes.tab</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="contact_customization.view_partner_form_custom_tabs"/>
+      <field name="arch" type="xml">
+
+        <xpath expr="//page[@name='custom_notes']" position="replace">
+          <page string="Notes" name="custom_notes">
+            <field name="note_ids" widget="contact_notes_widget" nolabel="1"/>
+          </page>
+        </xpath>
+
+      </field>
+    </record>
+
+  </data>
+</odoo>

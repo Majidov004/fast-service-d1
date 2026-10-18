@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Config Form -->
+    <record id="view_field_access_config_form" model="ir.ui.view">
+        <field name="name">field.access.config.form</field>
+        <field name="model">field.access.config</field>
+        <field name="arch" type="xml">
+            <form string="Sahə Giriş Konfiqurasiyası">
+                <header>
+                    <button name="toggle_active" type="object" string="Aktiv/Passiv" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Arxivlənib" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="user_id" options="{'no_create': True}" placeholder="İstifadəçi seç..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active"/>
+                            <field name="line_count"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sahə Qaydaları" name="rules">
+                            <field name="line_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="model_id"/>
+                                    <field name="field_id"/>
+                                    <field name="condition_type"/>
+                                    <field name="action"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                                <form string="Sahə Qaydası">
+                                    <sheet>
+                                        <group>
+                                            <group string="Sahə və Hərəkət">
+                                                <field name="model_id" options="{'no_create': True}"/>
+                                                <field name="model_name" invisible="1"/>
+                                                <field name="field_id" options="{'no_create': True}"/>
+                                                <field name="action"/>
+                                                <field name="mask_value"
+                                                       invisible="action != 'mask'"
+                                                       required="action == 'mask'"/>
+                                                <field name="active"/>
+                                            </group>
+                                            <group string="Şərt">
+                                                <field name="condition_type"/>
+                                                <field name="model_name"
+                                                       readonly="1"
+                                                       invisible="condition_type != 'domain'"/>
+                                                <field name="condition_domain"
+                                                       widget="domain"
+                                                       options="{'model': 'model_name'}"
+                                                       invisible="condition_type != 'domain'"
+                                                       required="condition_type == 'domain'"/>
+                                                <!-- <field name="trigger_field_id"
+                                                       invisible="condition_type != 'field_value'"
+                                                       required="condition_type == 'field_value'"
+                                                       options="{'no_create': True}"/>
+                                                <field name="operator"
+                                                       invisible="condition_type != 'field_value'"
+                                                       required="condition_type == 'field_value'"/>
+                                                <field name="trigger_value"
+                                                       invisible="condition_type != 'field_value'"
+                                                       required="condition_type == 'field_value'"/> -->
+                                            </group>
+                                        </group>
+                                        <group string="Python Kod" invisible="condition_type != 'python'">
+                                            <field name="condition_python"
+                                                   nolabel="1"
+                                                   required="condition_type == 'python'"
+                                                   placeholder="result = record.amount_total > 1000"/>
+                                        </group>
+                                        <group>
+                                            <field name="note"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Config List -->
+    <record id="view_field_access_config_list" model="ir.ui.view">
+        <field name="name">field.access.config.list</field>
+        <field name="model">field.access.config</field>
+        <field name="arch" type="xml">
+            <list string="Sahə Giriş Konfiqurasiyaları">
+                <field name="user_id"/>
+                <field name="line_count"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_field_access_config_search" model="ir.ui.view">
+        <field name="name">field.access.config.search</field>
+        <field name="model">field.access.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <filter string="Aktiv" name="active" domain="[('active','=',True)]"/>
+                <filter string="Arxiv" name="inactive" domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_field_access_config" model="ir.actions.act_window">
+        <field name="name">Sahə Giriş Konfiqurasiyası</field>
+        <field name="res_model">field.access.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Yeni konfiqurasiya yarat
+            </p>
+            <p>
+                Hər istifadəçi üçün yalnız bir konfiqurasiya ola bilər.
+            </p>
+        </field>
+    </record>
+
+</odoo>

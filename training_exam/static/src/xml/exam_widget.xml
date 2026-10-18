@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <!-- Mini exam cards inside the Exam tab -->
+  <t t-name="training_exam.TrainingExamWidget">
+    <div class="o_te_exam">
+      <div t-if="state.exams.length === 0" class="o_te_empty">
+        No exams yet. Exams are generated automatically (one per 5 lessons) after you Start the group.
+      </div>
+
+      <div t-else="" class="o_te_cards">
+        <div t-foreach="state.exams" t-as="e" t-key="e.id"
+             t-att-class="'o_te_card o_te_' + e.state"
+             t-on-click="() => this.openExam(e)">
+          <div class="o_te_card_top">
+            <span class="o_te_num">Exam #<t t-esc="e.exam_number"/></span>
+            <span t-if="e.state === 'done'" class="o_te_badge o_te_badge_done">Done</span>
+            <span t-elif="e.state === 'ready'" class="o_te_badge o_te_badge_ready">Exam Time</span>
+            <span t-else="" class="o_te_badge o_te_badge_wait">Waiting</span>
+          </div>
+          <div class="o_te_card_name">After Lesson <t t-esc="e.after_lesson_number"/></div>
+          <div class="o_te_card_foot">
+            <span class="o_te_total"><i class="fa fa-users me-1"/><t t-esc="e.student_count"/></span>
+            <span t-if="e.weak_count" class="o_te_weak">
+              <i class="fa fa-exclamation-triangle me-1"/><t t-esc="e.weak_count"/>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </t>
+
+  <!-- Exam popup -->
+  <t t-name="training_exam.ExamDialog">
+    <Dialog title="dialogTitle" size="'xl'">
+      <div t-if="state.loading" class="o_te_dialog_loading">Loading…</div>
+
+      <div t-else="" class="o_te_dialog">
+        <div class="o_te_dialog_head">
+          <span><i class="fa fa-graduation-cap me-1"/>After Lesson <t t-esc="state.exam.after_lesson_number"/></span>
+          <span t-if="state.exam.state === 'done'" class="o_te_badge o_te_badge_done">Done</span>
+          <span t-elif="state.exam.state === 'ready'" class="o_te_badge o_te_badge_ready">Exam Time</span>
+          <span t-else="" class="o_te_badge o_te_badge_wait">Waiting</span>
+        </div>
+
+        <div class="o_te_dialog_body">
+          <!-- far left: student list (select one at a time) -->
+          <div class="o_te_students">
+            <div t-if="state.exam.students.length === 0" class="o_te_empty">No students.</div>
+            <div t-foreach="state.exam.students" t-as="s" t-key="s.line_id"
+                 t-att-class="'o_te_student' + (s.line_id === state.selectedLineId ? ' o_te_active' : '')"
+                 t-on-click="() => this.selectStudent(s.line_id)">
+              <span class="o_te_student_name"><t t-esc="s.student_name"/></span>
+              <span t-att-class="'o_te_dot o_te_dot_' + (s.result || 'none')"/>
+            </div>
+          </div>
+
+          <!-- editor for the selected student: questions | result + comment -->
+          <div t-if="selectedStudent" class="o_te_editor">
+            <h5 class="o_te_editor_name" t-esc="selectedStudent.student_name"/>
+
+            <div class="o_te_split">
+              <!-- left half: the exam questions of this exam / program -->
+              <div class="o_te_questions">
+                <label class="o_te_label">Questions</label>
+                <div t-if="selectedStudent.answers.length === 0" class="o_te_empty o_te_empty_sm">
+                  No questions configured for this exam yet.
+                  Add them in Trail Lesson → Configurator → Question Bank
+                  (Stage = Exam, Exam # = <t t-esc="state.exam.exam_number"/>).
+                </div>
+                <div t-foreach="selectedStudent.answers" t-as="a" t-key="a.answer_id"
+                     class="o_te_question">
+                  <div class="o_te_question_text">
+                    <span class="o_te_question_num"><t t-esc="a_index + 1"/>.</span>
+                    <t t-esc="a.question"/>
+                  </div>
+                  <input type="text" class="form-control form-control-sm"
+                         placeholder="Student's answer…"
+                         t-att-value="a.answer"
+                         t-on-change="(ev) => this.onAnswer(a, ev)"/>
+                </div>
+              </div>
+
+              <!-- right half: result + free comment (unchanged behaviour) -->
+              <div class="o_te_comment">
+                <label class="o_te_label">Result</label>
+                <div class="o_te_result_toggle">
+                  <button t-foreach="results" t-as="r" t-key="r.value" type="button"
+                          t-att-class="'btn btn-sm ' + (selectedStudent.result === r.value ? 'btn-' + r.btn : 'btn-outline-' + r.btn)"
+                          t-on-click="() => this.setResult(r.value)">
+                    <t t-esc="r.label"/>
+                  </button>
+                </div>
+
+                <label class="o_te_label">Comment</label>
+                <textarea class="form-control" rows="8"
+                          placeholder="General comment about the student's exam…"
+                          t-att-value="selectedStudent.note"
+                          t-on-change="onNote"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <t t-set-slot="footer">
+        <button class="btn btn-primary" t-on-click="onSave" t-att-disabled="state.saving">
+          <t t-esc="saveLabel"/>
+        </button>
+        <button class="btn btn-secondary" t-on-click="() => this.props.close()">Close</button>
+      </t>
+    </Dialog>
+  </t>
+
+</templates>

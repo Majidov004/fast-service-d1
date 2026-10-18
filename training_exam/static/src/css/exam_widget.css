@@ -1,0 +1,310 @@
+/* ── Exam tab: mini exam cards (purple theme, distinct from Meeting) ─────── */
+.o_te_exam {
+    padding: 8px 4px;
+}
+
+.o_te_empty {
+    color: #8a8a8a;
+    font-style: italic;
+    padding: 24px 8px;
+    text-align: center;
+}
+
+.o_te_cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.o_te_card {
+    flex: 1 1 220px;
+    max-width: 260px;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #7d4cdb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.o_te_card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* waiting: block not finished yet — muted */
+.o_te_card.o_te_waiting {
+    opacity: 0.6;
+    border-left-color: #b0b0b0;
+    background: #f7f7f7;
+}
+
+/* ready: it's exam time — highlighted amber */
+.o_te_card.o_te_ready {
+    border-left-color: #f0932b;
+    background: #fff7ec;
+}
+
+/* done: results entered — dimmed */
+.o_te_card.o_te_done {
+    opacity: 0.7;
+    border-left-color: #7d4cdb;
+    background: #f5f1fc;
+}
+
+.o_te_card_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.o_te_num {
+    font-weight: 700;
+    color: #5a3aa0;
+}
+
+.o_te_badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.o_te_badge_wait {
+    background: #ececec;
+    color: #777;
+}
+
+.o_te_badge_ready {
+    background: #fde3c4;
+    color: #9a5b06;
+}
+
+.o_te_badge_done {
+    background: #ece4fb;
+    color: #5a3aa0;
+}
+
+.o_te_card_name {
+    font-weight: 600;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.o_te_card_foot {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+}
+
+.o_te_total { color: #6c757d; }
+.o_te_weak { color: #dc3545; font-weight: 600; }
+
+/* ── Popup dialog ───────────────────────────────────────────────────────── */
+.o_te_dialog_loading {
+    padding: 32px;
+    text-align: center;
+    color: #8a8a8a;
+}
+
+.o_te_dialog {
+    max-width: 100%;
+}
+
+.o_te_dialog_head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    color: #666;
+    font-size: 13px;
+}
+
+.o_te_dialog_body {
+    display: flex;
+    gap: 16px;
+    min-height: 200px;
+}
+
+.o_te_students {
+    width: 200px;
+    flex-shrink: 0;
+    border-right: 1px solid #eee;
+    padding-right: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.o_te_student {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.o_te_student:hover {
+    background: #f1f1f1;
+}
+
+.o_te_student.o_te_active {
+    background: #f0eafb;
+    font-weight: 600;
+}
+
+.o_te_student_name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.o_te_dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 8px;
+    border: 1px solid #ccc;
+}
+
+.o_te_dot_none { background: transparent; }
+.o_te_dot_zeif { background: #dc3545; border-color: #dc3545; }
+.o_te_dot_orta { background: #f0932b; border-color: #f0932b; }
+.o_te_dot_ela { background: #28a745; border-color: #28a745; }
+
+.o_te_editor {
+    flex: 1;
+    min-width: 0;
+}
+
+.o_te_editor_name {
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+.o_te_result_toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.o_te_result_toggle .btn {
+    flex: 1;
+}
+
+.o_te_label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+/* ── Editor split: questions (left) | result + comment (right) ───────────── */
+.o_te_split {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.o_te_questions {
+    flex: 1 1 55%;
+    min-width: 0;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 8px;
+    border-right: 1px solid #eee;
+}
+
+.o_te_comment {
+    flex: 1 1 45%;
+    min-width: 0;
+}
+
+.o_te_question {
+    margin-bottom: 10px;
+}
+
+.o_te_question_text {
+    font-size: 13px;
+    margin-bottom: 3px;
+    color: #333;
+    word-break: break-word;
+}
+
+.o_te_question_num {
+    font-weight: 700;
+    color: #5a3aa0;
+    margin-right: 4px;
+}
+
+.o_te_empty_sm {
+    padding: 12px 4px;
+    font-size: 12px;
+    text-align: left;
+}
+
+/* ── Mobile / narrow screens ────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    .o_te_card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .o_te_dialog_body {
+        flex-direction: column;
+        gap: 12px;
+        min-height: 0;
+    }
+
+    .o_te_students {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-height: none;
+        padding: 0 0 8px 0;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o_te_student {
+        flex: 0 0 auto;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 0;
+    }
+
+    .o_te_student.o_te_active {
+        border-color: #7d4cdb;
+    }
+
+    .o_te_student_name {
+        max-width: 140px;
+    }
+
+    .o_te_split {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .o_te_questions {
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-right: 0;
+        padding-bottom: 8px;
+    }
+}

@@ -1,0 +1,282 @@
+.o_an_dashboard {
+    padding: 20px;
+    background: #f5f6fa;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.o_an_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.o_an_header h2 {
+    margin: 0;
+    font-weight: 600;
+    color: #2b2b48;
+}
+
+.o_an_loading {
+    color: #888;
+    font-style: italic;
+    padding: 16px 0;
+}
+
+/* ── Top KPIs ─────────────────────────────────────────── */
+.o_an_kpis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.o_an_kpi {
+    flex: 1;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #875a7b;
+}
+
+.o_an_kpi_total { border-left-color: #00a09d; }
+.o_an_kpi_students { border-left-color: #875a7b; }
+.o_an_kpi_applicants { border-left-color: #f0a020; }
+
+.o_an_kpi_label {
+    font-size: 0.78rem;
+    color: #777;
+    margin-bottom: 6px;
+}
+
+.o_an_kpi_value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2b2b48;
+}
+
+/* ── Month context ────────────────────────────────────── */
+.o_an_month {
+    font-weight: 600;
+    color: #2b2b48;
+    margin: 8px 0 14px;
+    font-size: 1.02rem;
+}
+
+.o_an_month_sub {
+    font-weight: 400;
+    color: #999;
+    font-size: 0.85rem;
+    margin-left: 8px;
+}
+
+/* ── Funnel status cards ──────────────────────────────── */
+.o_an_stages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.o_an_stage {
+    flex: 1 1 150px;
+    max-width: 200px;
+    background: #fff;
+    border: 1px solid #e3e8ef;
+    border-top: 3px solid #b8a0c0;
+    border-radius: 10px;
+    padding: 14px 12px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+/* loss stages highlighted in red, success in green */
+.o_an_stage_no_answer,
+.o_an_stage_not_want,
+.o_an_stage_trial_no_contact { border-top-color: #e74c3c; }
+
+.o_an_stage_paid { border-top-color: #1e9e5a; }
+
+.o_an_stage_label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 8px;
+    min-height: 2.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_an_stage_count {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #2b2b48;
+    line-height: 1;
+}
+
+.o_an_pct {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 8px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 10px;
+    cursor: help;
+}
+
+.o_an_pct_up { background: #d6f3e2; color: #15824a; }
+.o_an_pct_down { background: #fad9d4; color: #c0392b; }
+.o_an_pct_flat { background: #e7e9ef; color: #666; }
+.o_an_pct_none { color: #bbb; cursor: default; }
+
+/* ── Section titles ───────────────────────────────────── */
+.o_an_section_title {
+    font-weight: 600;
+    color: #2b2b48;
+    font-size: 1.02rem;
+    margin: 22px 0 12px;
+}
+
+/* tooltip varlığını bildirən kursor */
+.o_an_kpi[title],
+.o_an_stage[title] {
+    cursor: help;
+}
+
+/* ── Rate KPI cards (tone-coloured) ───────────────────── */
+.o_an_tone_good { border-left-color: #1e9e5a; }
+.o_an_tone_bad { border-left-color: #e74c3c; }
+.o_an_tone_flat { border-left-color: #b8a0c0; }
+
+.o_an_rate_row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.o_an_sub {
+    font-size: 0.74rem;
+    color: #9aa0a8;
+    margin-top: 4px;
+}
+
+/* pct chip coloured by tone (good/bad/flat) */
+.o_an_pct_good { background: #d6f3e2; color: #15824a; }
+.o_an_pct_bad { background: #fad9d4; color: #c0392b; }
+
+/* ── Two-column layout (shorten the page) ─────────────── */
+.o_an_two {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+}
+.o_an_half {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Panel (table / trend wrapper) ────────────────────── */
+.o_an_panel {
+    background: #fff;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Sources table ────────────────────────────────────── */
+.o_an_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.o_an_table th {
+    text-align: left;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #999;
+    border-bottom: 2px solid #eef0f5;
+    padding: 6px 10px;
+}
+.o_an_table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f0f1f5;
+    font-size: 0.88rem;
+    color: #333;
+}
+.o_an_table .o_an_r { text-align: right; white-space: nowrap; }
+.o_an_conv { font-weight: 700; color: #15824a; }
+
+/* ── 6-month trend (CSS bars) ─────────────────────────── */
+.o_an_trend {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    height: 180px;
+    padding: 8px 4px 0;
+}
+.o_an_trend_col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+.o_an_bars {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+}
+.o_an_bar {
+    width: 28px;
+    min-height: 2px;
+    border-radius: 5px 5px 0 0;
+    transition: height 0.2s ease;
+}
+.o_an_bar_reg { background: #875a7b; }
+.o_an_bar_paid { background: #1e9e5a; }
+.o_an_trend_label {
+    margin-top: 8px;
+    font-size: 0.76rem;
+    color: #888;
+}
+.o_an_legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f1f5;
+}
+.o_an_lg {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.78rem;
+    color: #666;
+}
+.o_an_lg::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 6px;
+}
+.o_an_lg_reg::before { background: #875a7b; }
+.o_an_lg_paid::before { background: #1e9e5a; }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 768px) {
+    .o_an_dashboard { padding: 12px; }
+    .o_an_kpi { min-width: 0; flex: 1 1 45%; }
+    .o_an_stage { flex: 1 1 45%; max-width: none; }
+    .o_an_trend { gap: 8px; }
+    .o_an_bar { width: 18px; }
+    .o_an_two { flex-direction: column; gap: 0; }
+}

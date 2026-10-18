@@ -1,0 +1,125 @@
+.o_contact_notes_wrapper {
+    width: 100%;
+    display: block;
+}
+
+.o_field_widget:has(.o_contact_notes_wrapper) {
+    width: 100%;
+    display: block;
+    max-width: 100%;
+}
+
+.o_contact_notes {
+    width: 100%;
+    display: block;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.o_notes_toolbar {
+    margin-bottom: 16px;
+}
+
+.o_notes_empty {
+    color: #aaa;
+    font-style: italic;
+    padding: 12px 0;
+}
+
+.o_note_card {
+    background: #ffffff;
+    border: 1px solid #e3e8ef;
+    border-left: 4px solid #875a7b;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s ease;
+}
+
+.o_note_card:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.o_note_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.o_note_meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.o_note_author {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #444;
+}
+
+.o_note_date {
+    font-size: 0.80rem;
+    color: #999;
+}
+
+.o_note_actions {
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.o_note_card:hover .o_note_actions {
+    opacity: 1;
+}
+
+.o_note_actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    color: #999;
+    transition: color 0.15s, background 0.15s;
+}
+
+.o_note_actions button:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.o_note_actions button.delete:hover {
+    color: #e74c3c;
+    background: #fdecea;
+}
+
+.o_note_body {
+    font-size: 0.93rem;
+    color: #333;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+}
+
+/* ── Touch devices: hover-revealed actions can't be reached, so always
+      show the edit/delete buttons. ─────────────────────────────────────── */
+@media (hover: none) {
+    .o_note_actions { opacity: 1; }
+}
+
+/* ── Responsive: phone ────────────────────────────────── */
+@media (max-width: 768px) {
+    .o_contact_notes { max-height: 60vh; }
+    .o_note_actions { opacity: 1; }
+    .o_note_header { flex-wrap: wrap; gap: 6px 14px; }
+    .o_note_card { padding: 10px 12px; }
+}

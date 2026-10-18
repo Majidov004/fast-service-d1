@@ -1,0 +1,138 @@
+.o_meeting_comments_wrapper {
+    width: 100%;
+    display: block;
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.o_field_widget:has(.o_meeting_comments_wrapper) {
+    width: 100%;
+    display: block;
+    max-width: 100%;
+}
+
+.o_meeting_empty {
+    color: #aaa;
+    font-style: italic;
+    padding: 12px 0;
+}
+
+/* ── Group ───────────────────────────────────────────── */
+.o_meeting_group {
+    margin-bottom: 20px;
+}
+
+.o_meeting_group_header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 6px 10px;
+    background: #f0eef3;
+    border-left: 4px solid #00a09d;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.o_meeting_group_name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #2b2b48;
+}
+
+.o_meeting_group_teacher {
+    font-size: 0.82rem;
+    color: #00807d;
+}
+
+.o_meeting_group_count {
+    margin-left: auto;
+    background: #00a09d;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 9px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* ── Lesson cards ────────────────────────────────────── */
+.o_meeting_lessons {
+    padding-left: 10px;
+}
+
+.o_meeting_card {
+    background: #ffffff;
+    border: 1px solid #e3e8ef;
+    border-left: 4px solid #875a7b;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.o_meeting_card_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.o_meeting_lesson_name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #444;
+}
+
+.o_meeting_lesson_meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.o_meeting_date {
+    font-size: 0.80rem;
+    color: #999;
+}
+
+.o_att_badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 1px 8px;
+}
+
+.o_att_present {
+    background: #e3f6ec;
+    color: #1e9e5a;
+}
+
+.o_att_absent {
+    background: #fdecea;
+    color: #e74c3c;
+}
+
+.o_meeting_card_body {
+    font-size: 0.92rem;
+    color: #333;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+}
+
+/* ── Responsive: phone ────────────────────────────────── */
+@media (max-width: 768px) {
+    .o_meeting_comments_wrapper { max-height: 65vh; }
+    .o_meeting_lessons { padding-left: 0; }
+
+    /* group header: name/teacher/count stack instead of overflowing */
+    .o_meeting_group_header { flex-wrap: wrap; gap: 4px 10px; }
+    .o_meeting_group_count { margin-left: auto; }
+
+    /* lesson card header: lesson name on top, meta below */
+    .o_meeting_card_head { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .o_meeting_card { padding: 10px 12px; }
+}

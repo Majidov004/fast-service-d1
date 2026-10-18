@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <!-- Menyudan gizlədilib (base.group_no_one) — funksionallıq qalır:
+         dərslər avtomatik yaranır, cron və exam hook-ları işləyir.
+         Yalnız developer rejimdə görünür. -->
+    <menuitem id="menu_lesson_root"
+              name="Lesson Records"
+              sequence="15"
+              web_icon="lesson_record,static/description/icon.png"
+              groups="base.group_no_one"/>
+
+    <!-- Lessons Submenu - needaction_enabled badge üçün -->
+    <menuitem id="menu_lesson_records"
+              name="Lessons"
+              parent="menu_lesson_root"
+              action="action_lesson_record"
+              sequence="10"/>
+</odoo>

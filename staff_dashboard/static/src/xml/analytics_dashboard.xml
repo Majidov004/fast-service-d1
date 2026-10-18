@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="staff_dashboard.Analytics">
+    <div class="o_an_dashboard">
+
+      <div class="o_an_header">
+        <h2><i class="fa fa-filter me-2"/>Applicant Analytics</h2>
+        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.refresh()">
+          <i class="fa fa-refresh me-1"/> Refresh
+        </button>
+      </div>
+
+      <div t-if="state.loading" class="o_an_loading">
+        <i class="fa fa-spinner fa-spin"/> Loading...
+      </div>
+
+      <div t-elif="!state.data.available" class="o_an_loading">
+        Applicant data is not available (the Contacts customization module is not installed).
+      </div>
+
+      <t t-else="">
+        <!-- Top KPIs -->
+        <div class="o_an_kpis">
+          <div class="o_an_kpi o_an_kpi_total"
+               title="All people who are a student or an applicant (all time).">
+            <div class="o_an_kpi_label">Total Registered</div>
+            <div class="o_an_kpi_value"><t t-esc="state.data.totals.people"/></div>
+          </div>
+          <div class="o_an_kpi o_an_kpi_students"
+               title="All partners marked as student (all time).">
+            <div class="o_an_kpi_label">Students</div>
+            <div class="o_an_kpi_value"><t t-esc="state.data.totals.students"/></div>
+          </div>
+          <div class="o_an_kpi o_an_kpi_applicants"
+               title="All partners currently marked as applicant.">
+            <div class="o_an_kpi_label">Applicants</div>
+            <div class="o_an_kpi_value"><t t-esc="state.data.totals.applicants"/></div>
+          </div>
+        </div>
+
+        <!-- Month context -->
+        <div class="o_an_month">
+          <i class="fa fa-calendar me-1"/><t t-esc="state.data.month_label"/>
+          <span class="o_an_month_sub">compared to <t t-esc="state.data.prev_month_label"/></span>
+        </div>
+
+        <!-- A. Key rates -->
+        <div t-if="state.data.rates" class="o_an_section_title">Key Rates</div>
+        <div t-if="state.data.rates" class="o_an_kpis">
+          <div t-foreach="state.data.rates" t-as="r" t-key="r.label"
+               t-attf-class="o_an_kpi o_an_tone_{{ r.tone }}" t-att-title="r.help">
+            <div class="o_an_kpi_label"><t t-esc="r.label"/></div>
+            <div class="o_an_rate_row">
+              <span class="o_an_kpi_value"><t t-esc="r.value"/><t t-esc="r.suffix"/></span>
+              <span t-attf-class="o_an_pct o_an_pct_{{ r.tone }}"
+                    t-attf-title="vs {{ state.data.prev_month_label }}">
+                <i t-attf-class="fa {{ r.change === 'up' ? 'fa-arrow-up' : (r.change === 'down' ? 'fa-arrow-down' : 'fa-minus') }}"/>
+              </span>
+            </div>
+            <div class="o_an_sub">was <t t-esc="r.prev"/><t t-esc="r.suffix"/></div>
+          </div>
+        </div>
+
+        <!-- Funnel: status cards side by side -->
+        <div class="o_an_section_title">Funnel — <t t-esc="state.data.month_label"/></div>
+        <div class="o_an_stages">
+          <div t-foreach="state.data.stages" t-as="s" t-key="s.key"
+               t-attf-class="o_an_stage o_an_stage_{{ s.key }}" t-att-title="s.help">
+            <div class="o_an_stage_label"><t t-esc="s.label"/></div>
+            <div class="o_an_stage_count"><t t-esc="s.count"/></div>
+            <div t-if="s.pct.has" t-attf-class="o_an_pct o_an_pct_{{ s.pct.dir }}"
+                 t-attf-title="vs {{ state.data.prev_month_label }} ({{ s.prev_count }})">
+              <i t-attf-class="fa {{ s.pct.dir === 'up' ? 'fa-arrow-up' : (s.pct.dir === 'down' ? 'fa-arrow-down' : 'fa-minus') }}"/>
+              <t t-esc="s.pct.value"/>%
+            </div>
+            <div t-else="" class="o_an_pct o_an_pct_none">
+              <span t-att-title="'No data last month'">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- C (trials) + B (sources) side by side -->
+        <div class="o_an_two">
+        <div t-if="state.data.trials" class="o_an_half">
+          <div class="o_an_section_title">Trial Lessons — <t t-esc="state.data.month_label"/></div>
+          <div class="o_an_stages">
+            <div class="o_an_stage" title="Trial lessons scheduled this month (by lesson date).">
+              <div class="o_an_stage_label">Total</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.total"/></div>
+            </div>
+            <div class="o_an_stage" title="Trials still in the planned state.">
+              <div class="o_an_stage_label">Planned</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.planned"/></div>
+            </div>
+            <div class="o_an_stage o_an_stage_paid" title="Trials completed this month.">
+              <div class="o_an_stage_label">Completed</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.completed"/></div>
+            </div>
+            <div class="o_an_stage o_an_stage_no_answer" title="Trials marked as missing (no-show).">
+              <div class="o_an_stage_label">Missing</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.missing"/></div>
+            </div>
+            <div class="o_an_stage o_an_stage_paid" title="Completed trials whose decision was joining.">
+              <div class="o_an_stage_label">Joining</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.joining"/></div>
+            </div>
+            <div class="o_an_stage" title="Completed trials whose decision was thinking.">
+              <div class="o_an_stage_label">Thinking</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.thinking"/></div>
+            </div>
+            <div class="o_an_stage o_an_stage_no_answer" title="Completed trials whose decision was not joining.">
+              <div class="o_an_stage_label">Not Joining</div>
+              <div class="o_an_stage_count"><t t-esc="state.data.trials.not_joining"/></div>
+            </div>
+          </div>
+        </div>
+        <div t-if="state.data.sources.length" class="o_an_half">
+          <div class="o_an_section_title">Lead Sources — <t t-esc="state.data.month_label"/></div>
+          <div class="o_an_panel"
+               title="Where this month's applicants came from, with how many paid and the conversion rate per source.">
+            <table class="o_an_table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th class="o_an_r">Registered</th>
+                  <th class="o_an_r">Paid</th>
+                  <th class="o_an_r">Conversion</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr t-foreach="state.data.sources" t-as="s" t-key="s.label">
+                  <td><t t-esc="s.label"/></td>
+                  <td class="o_an_r"><t t-esc="s.count"/></td>
+                  <td class="o_an_r"><t t-esc="s.paid"/></td>
+                  <td class="o_an_r o_an_conv"><t t-esc="s.conv"/>%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- E. 6-month trend -->
+        <div class="o_an_section_title">Last 6 Months</div>
+        <div class="o_an_panel"
+             title="Registered applicants vs Paid (converted) for each of the last 6 months.">
+          <div class="o_an_trend">
+            <div t-foreach="state.data.trend" t-as="m" t-key="m.label" class="o_an_trend_col">
+              <div class="o_an_bars">
+                <div class="o_an_bar o_an_bar_reg" t-attf-style="height: {{ barH(m.registered) }}%"
+                     t-attf-title="Registered: {{ m.registered }}"/>
+                <div class="o_an_bar o_an_bar_paid" t-attf-style="height: {{ barH(m.paid) }}%"
+                     t-attf-title="Paid: {{ m.paid }}"/>
+              </div>
+              <div class="o_an_trend_label"><t t-esc="m.label"/></div>
+            </div>
+          </div>
+          <div class="o_an_legend">
+            <span class="o_an_lg o_an_lg_reg">Registered</span>
+            <span class="o_an_lg o_an_lg_paid">Paid</span>
+          </div>
+        </div>
+
+        <!-- F. Students overview -->
+        <t t-if="state.data.students">
+          <div class="o_an_section_title">Students</div>
+          <div class="o_an_kpis">
+            <div class="o_an_kpi o_an_kpi_students" title="All students (all time).">
+              <div class="o_an_kpi_label">Total Students</div>
+              <div class="o_an_kpi_value"><t t-esc="state.data.students.total"/></div>
+            </div>
+            <div t-attf-class="o_an_kpi o_an_tone_{{ state.data.students.new.tone }}"
+                 t-att-title="state.data.students.new.help">
+              <div class="o_an_kpi_label">New Students</div>
+              <div class="o_an_rate_row">
+                <span class="o_an_kpi_value"><t t-esc="state.data.students.new.value"/></span>
+                <span t-attf-class="o_an_pct o_an_pct_{{ state.data.students.new.tone }}">
+                  <i t-attf-class="fa {{ state.data.students.new.change === 'up' ? 'fa-arrow-up' : (state.data.students.new.change === 'down' ? 'fa-arrow-down' : 'fa-minus') }}"/>
+                </span>
+              </div>
+              <div class="o_an_sub">was <t t-esc="state.data.students.new.prev"/></div>
+            </div>
+            <div class="o_an_kpi o_an_kpi_total"
+                 title="Training groups currently in progress (Started).">
+              <div class="o_an_kpi_label">Active Groups</div>
+              <div class="o_an_kpi_value"><t t-esc="state.data.students.active_groups"/></div>
+            </div>
+          </div>
+          <div t-if="state.data.students.lead.length" class="o_an_stages">
+            <div t-foreach="state.data.students.lead" t-as="l" t-key="l.label" class="o_an_stage"
+                 title="Number of students currently at this lesson stage.">
+              <div class="o_an_stage_label"><t t-esc="l.label"/></div>
+              <div class="o_an_stage_count"><t t-esc="l.count"/></div>
+            </div>
+          </div>
+        </t>
+      </t>
+
+    </div>
+  </t>
+
+</templates>

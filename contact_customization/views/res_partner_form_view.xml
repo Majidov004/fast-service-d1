@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+
+    <!-- ── Shared form inheritance (header + stat button + field group) ──── -->
+    <record id="view_partner_form_custom" model="ir.ui.view">
+      <field name="name">res.partner.form.custom</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+
+        <!-- ── Header ──────────────────────────────────────────────────── -->
+        <xpath expr="//sheet" position="before">
+          <header>
+
+            <!-- APPLICANT buttons -->
+            <button name="action_set_needs_to_be_called"
+                    string="Needs to be Called" type="object" class="btn-primary"
+                    invisible="applicant_state != 'interested' or not is_applicant"/>
+
+            <button name="action_set_called"
+                    string="Messaged" type="object" class="btn-primary"
+                    invisible="applicant_state != 'needs_to_be_called' or not is_applicant"/>
+
+            <button name="action_set_no_answer"
+                    string="No Answer" type="object" class="btn-secondary"
+                    invisible="applicant_state != 'needs_to_be_called' or not is_applicant"/>
+
+            <button name="action_set_wait"
+                    string="Wait" type="object" class="btn-warning"
+                    invisible="applicant_state != 'called' or not is_applicant"/>
+
+            <button name="action_create_trial_lesson"
+                    string="Create Trial Lesson" type="object" class="btn-primary"
+                    invisible="applicant_state not in ('called', 'wait') or not is_applicant"/>
+
+            <button name="action_set_called"
+                    string="Messaged" type="object" class="btn-secondary"
+                    invisible="applicant_state != 'no_answer' or no_answer_type in ('before_trial', 'after_trial') or not is_applicant"/>
+
+            <button name="action_trial_complete"
+                    string="Complete Trial" type="object" class="btn-success"
+                    invisible="applicant_state != 'planned_trial' or not is_applicant"/>
+
+            <button name="action_trial_missing"
+                    string="Missing Lesson" type="object" class="btn-danger"
+                    invisible="applicant_state != 'planned_trial' or not is_applicant"
+                    confirm="Mark this lesson as NOT conducted (Missing)?"/>
+
+            <button name="action_trial_plan_new"
+                    string="Plan New Trial" type="object" class="btn-secondary"
+                    invisible="applicant_state != 'planned_trial' or not is_applicant"/>
+
+            <button name="action_set_paid"
+                    string="Paid" type="object" class="btn-success"
+                    invisible="applicant_state != 'trial_no_contact' and (applicant_state != 'no_answer' or no_answer_type != 'before_trial') or not is_applicant"/>
+
+            <button name="action_open_planned_remember_wizard"
+                    string="Planned Remember" type="object" class="btn-warning"
+                    invisible="applicant_state != 'trial_no_contact' and (applicant_state != 'no_answer' or no_answer_type != 'before_trial') or not is_applicant"/>
+
+            <button name="action_set_not_want"
+                    string="Not Want" type="object" class="btn-danger"
+                    invisible="applicant_state != 'trial_no_contact' and (applicant_state != 'no_answer' or no_answer_type != 'before_trial') or not is_applicant"/>
+
+            <button name="action_set_paid"
+                    string="Paid" type="object" class="btn-success"
+                    invisible="applicant_state != 'remember' or not is_applicant"/>
+
+            <button name="action_set_not_want"
+                    string="Not Want" type="object" class="btn-danger"
+                    invisible="applicant_state != 'remember' or not is_applicant"/>
+
+            <!-- PLANNED REMEMBER buttons -->
+            <button name="action_create_trial_lesson"
+                    string="Create Trial Lesson" type="object" class="btn-primary"
+                    invisible="applicant_state != 'planned_remember' or not is_applicant"/>
+
+            <button name="action_open_planned_remember_wizard"
+                    string="Again Planned Remember" type="object" class="btn-warning"
+                    invisible="applicant_state != 'planned_remember' or not is_applicant"/>
+
+            <button name="action_set_not_want"
+                    string="Not Want" type="object" class="btn-danger"
+                    invisible="applicant_state != 'planned_remember' or not is_applicant"/>
+
+            <button string="Save" special="save" class="btn-primary"
+                    invisible="applicant_state and applicant_state != 'interested'"/>
+
+            <button string="Cancel" type="object" special="cancel"
+                    class="btn-secondary" invisible="not is_applicant"/>
+
+            <!-- STUDENT buttons -->
+            <button string="Save" special="save" class="btn-primary"
+                    invisible="not is_student"/>
+
+            <button name="action_set_lesson_complete"
+                    string="Complete Lesson" type="object" class="btn-primary"
+                    invisible="lead_state != 'lesson_planned' or not is_student"/>
+
+            <!-- Status bars -->
+            <field name="applicant_state" widget="statusbar"
+                   invisible="not is_applicant"
+                   statusbar_visible=""/>
+
+            <field name="lead_state" widget="statusbar"
+                   invisible="not is_student"
+                   statusbar_visible="lesson_not_planned,lesson_planned,lesson_complete"/>
+
+          </header>
+        </xpath>
+
+        <!-- ── Smart buttons (added into button_box) ─────────────────────── -->
+        <xpath expr="//div[@name='button_box']" position="inside">
+          <button name="action_view_trail_lessons" type="object"
+                  class="oe_stat_button" icon="fa-graduation-cap">
+            <field name="trail_lesson_count" widget="statinfo" string="Trial Lessons"/>
+          </button>
+          <button name="action_view_training_groups" type="object"
+                  class="oe_stat_button" icon="fa-users"
+                  invisible="not is_student">
+            <field name="training_group_count" widget="statinfo" string="Training Groups"/>
+          </button>
+        </xpath>
+
+        <!-- ── Main field group + Trial Decision Summary ─────────────────── -->
+        <xpath expr="//sheet/group" position="replace">
+
+          <!-- Row 1: Contact details -->
+          <group>
+            <group>
+              <field name="phone"  widget="phone"/>
+              <field name="mobile" widget="phone"/>
+              <field name="email"  widget="email"/>
+              <field name="manager_id"
+                     options="{'no_create': True, 'no_open': True}"/>
+
+              <field name="teacher_id"
+                     options="{'no_create': True, 'no_open': True}"
+                     invisible="not is_student"/>
+
+              <field name="current_level"/>
+
+              <div class="o_row" colspan="2">
+                <field name="reference_source" nolabel="1"
+                       placeholder="Reference Source"/>
+                <field name="reference_tiktok_account"
+                       nolabel="1" placeholder="TikTok Account"
+                       invisible="reference_source not in ('tiktok_organic', 'tiktok_ads')"/>
+                <field name="reference_instagram_account"
+                       nolabel="1" placeholder="Instagram Account"
+                       invisible="reference_source not in ('instagram_organic', 'instagram_ads')"/>
+                <field name="reference_facebook_account"
+                       nolabel="1" placeholder="Facebook Account"
+                       invisible="reference_source not in ('facebook_organic', 'facebook_ads')"/>
+                <field name="reference_whatsapp_account"
+                       nolabel="1" placeholder="WhatsApp Number"
+                       invisible="reference_source != 'whatsapp'"/>
+                <field name="reference_linkedin_account"
+                       nolabel="1" placeholder="LinkedIn Profile"
+                       invisible="reference_source not in ('linkedin_organic', 'linkedin_ads')"/>
+                <field name="reference_youtube_account"
+                       nolabel="1" placeholder="YouTube Channel"
+                       invisible="reference_source not in ('youtube_organic', 'youtube_ads')"/>
+              </div>
+
+              <!-- hidden flags used by invisible conditions -->
+              <field name="is_student"   invisible="1"/>
+              <field name="is_applicant" invisible="1"/>
+
+              <field name="planned_remember_date"
+                     readonly="1"
+                     invisible="applicant_state != 'planned_remember'"/>
+              <field name="planned_remember_employee_id"
+                     readonly="1"
+                     options="{'no_open': True}"
+                     invisible="applicant_state != 'planned_remember'"/>
+
+              <field name="no_answer_type"           invisible="1"/>
+              <field name="no_answer_type_effective"
+                     string="No Answer Stage"
+                     widget="badge"
+                     readonly="1"
+                     invisible="applicant_state not in ('no_answer', 'trial_no_contact')"/>
+            </group>
+          </group>
+
+        </xpath>
+
+        <!-- Hide unused standard fields -->
+        <xpath expr="//field[@name='company_type']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//field[@name='parent_id']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+      </field>
+    </record>
+
+    <!-- ── Trial Detail tab + Notes tab + hide system tabs ──────────────── -->
+    <record id="view_partner_form_custom_tabs" model="ir.ui.view">
+      <field name="name">res.partner.form.custom.tabs</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+
+        <xpath expr="//notebook/page[1]" position="before">
+
+          <!-- hidden field so tl_decision is available for invisible conditions in this view -->
+          <field name="tl_decision" invisible="1"/>
+
+          <!-- ── Trial Lesson (quick plan) tab ─────────────────────────── -->
+          <page string="Trial Lesson" name="trial_lesson_tab">
+            <group>
+              <group col="2">
+                <field name="trial_teacher_id"
+                       string="Trial Teacher"
+                       options="{'no_create': True, 'no_open': True}"
+                       invisible="not applicant_state"/>
+                <field name="trial_datetime"
+                       string="Trial DateTime"
+                       widget="datetime"
+                       invisible="applicant_state not in ('called', 'wait', 'no_answer', 'planned_trial', 'trial_no_contact', 'planned_remember', 'remember', 'not_want', 'paid')"/>
+              </group>
+            </group>
+          </page>
+
+          <!-- ── Trial Detail tab ───────────────────────────────────────── -->
+          <page string="Trial Detail" name="trial_detail_tab"
+                invisible="not tl_decision">
+
+            <notebook>
+
+              <!-- Background -->
+              <page string="Background" name="td_background">
+                <group col="2">
+                  <group string="Personal">
+                    <field name="tl_gender"/>
+                    <field name="tl_approximate_age"/>
+                    <field name="tl_for_whom"/>
+                    <field name="tl_for_whom_note"
+                           invisible="tl_for_whom == 'self'"/>
+                  </group>
+                  <group string="Professional">
+                    <field name="tl_company_id"/>
+                    <field name="tl_position_id"/>
+                    <field name="tl_school_id"/>
+                    <field name="tl_english_level"/>
+                  </group>
+                </group>
+              </page>
+
+              <!-- Q&A Session -->
+              <page string="Q&amp;A Session" name="td_qa">
+                <field name="tl_qa_ids" nolabel="1" readonly="1">
+                  <list>
+                    <field name="sequence" widget="handle"/>
+                    <field name="question"/>
+                    <field name="answer"/>
+                    <field name="translation"/>
+                  </list>
+                </field>
+              </page>
+
+              <!-- Assessment -->
+              <page string="Assessment" name="td_assessment">
+                <group col="2">
+                  <group string="Evaluation">
+                    <field name="tl_comprehension"/>
+                    <field name="tl_motivation"/>
+                    <field name="tl_learning_purpose_id"/>
+                  </group>
+                  <group string="Background">
+                    <field name="tl_previous_courses"/>
+                    <field name="tl_course_id"
+                           invisible="not tl_previous_courses"/>
+                  </group>
+                </group>
+              </page>
+
+              <!-- Decision -->
+              <page string="Decision" name="td_decision">
+                <group col="2">
+                  <group string="Outcome">
+                    <field name="tl_decision"        readonly="1"/>
+                    <field name="tl_thinking_reason" readonly="1"
+                           invisible="tl_decision != 'thinking'"/>
+                    <field name="tl_lesson_format"   readonly="1"/>
+                    <label for="tl_join_timing"/>
+                    <div class="o_row">
+                      <field name="tl_join_timing" nolabel="1"
+                             readonly="applicant_state != 'remember'"/>
+                      <field name="tl_expected_join_date" nolabel="1"
+                             invisible="not tl_join_timing or tl_join_timing == 'later'"/>
+                    </div>
+                  </group>
+                  <group string="Payment" invisible="tl_decision != 'joining'">
+                    <field name="tl_payment_type"   readonly="1"/>
+                    <field name="tl_payment_amount" readonly="1"/>
+                  </group>
+                </group>
+                <group string="System Choosing">
+                  <field name="tl_system_choice" widget="radio" readonly="1" nolabel="1"/>
+                  <field name="tl_system_choice_note"
+                         readonly="1"
+                         invisible="tl_system_choice != 'other'"/>
+                </group>
+              </page>
+
+              <!-- Notes -->
+              <page string="Notes" name="td_notes">
+                <field name="tl_complete_notes"
+                       nolabel="1"
+                       readonly="1"
+                       placeholder="No notes from trial lesson."
+                       widget="text"/>
+              </page>
+
+            </notebook>
+          </page>
+
+          <!-- ── Meeting tab (students only): per-lesson comments ───────── -->
+          <page string="Meeting" name="meeting_tab" invisible="not is_student">
+            <field name="meeting_line_ids" widget="meeting_comments_widget" nolabel="1"/>
+          </page>
+
+        </xpath>
+
+        <!-- Notes tab -->
+        <xpath expr="//notebook" position="inside">
+          <page string="Notes" name="custom_notes">
+            <group>
+              <field name="comment" string="Notes"
+                     placeholder="Enter additional notes about this contact…"
+                     nolabel="0"/>
+            </group>
+          </page>
+        </xpath>
+
+        <!-- Hide standard tabs -->
+        <xpath expr="//page[@name='sales_purchases']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//page[@name='internal_notes']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//page[@name='contact_addresses']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+      </field>
+    </record>
+
+  </data>
+</odoo>

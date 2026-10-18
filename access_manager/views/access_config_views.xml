@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================== -->
+    <!-- LINE FORM VIEW (popup şəklində açılır)             -->
+    <!-- ================================================== -->
+    <record id="access_config_line_view_form" model="ir.ui.view">
+        <field name="name">access.config.line.form</field>
+        <field name="model">access.config.line</field>
+        <field name="arch" type="xml">
+            <form string="İcazə Sətri">
+                <sheet>
+                    <group>
+                        <group string="Model">
+                            <field name="model_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="CRUD İcazələri">
+                            <field name="perm_read" widget="boolean_toggle"/>
+                            <field name="perm_write" widget="boolean_toggle"/>
+                            <field name="perm_create" widget="boolean_toggle"/>
+                            <field name="perm_unlink" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group string="Record Filter (hansı sənədləri görsün?)">
+                        <field name="filter_mode" widget="radio"/>
+                        <field name="user_field_id"
+                               invisible="filter_mode == 'all'"
+                               options="{'no_create': True, 'no_open': True}"
+                               help="Boş qoyulsa avtomatik 'create_uid' işlədilir"/>
+                    </group>
+
+                    <group string="Əlavə görünən userlər"
+                           invisible="filter_mode != 'own_plus'">
+                        <field name="visible_user_ids"
+                               widget="many2many_tags"
+                               options="{'no_create': True}"
+                               domain="[('id', '!=', parent.user_id), ('id', '!=', 1)]"
+                               nolabel="1" colspan="2"/>
+                        <div colspan="2" class="text-muted">
+                            <i class="fa fa-info-circle me-1"/>
+                            Bu user öz sənədlərindən başqa burada seçilən
+                            userlərin sənədlərini də görəcək.
+                        </div>
+                    </group>
+
+                    <group string="Status Filteri (hansı statuslarda olan sənədlər görünsün?)">
+                        <field name="status_field_id"
+                               options="{'no_create': True, 'no_open': True}"
+                               help="Yalnız selection tipli sahələr göstərilir"/>
+                        <field name="available_values_hint"
+                               readonly="1"
+                               invisible="not status_field_id"
+                               help="Seçilən sahənin dəyərləri — aşağıdakı siyahıya bu dəyərləri əlavə edin"/>
+                        <field name="status_value_ids"
+                               invisible="not status_field_id"
+                               nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="value"
+                                       string="Status Dəyəri"
+                                       required="1"
+                                       placeholder="məs. draft, planned, done"/>
+                            </list>
+                        </field>
+                        <div colspan="2" class="text-muted" invisible="not status_field_id">
+                            <i class="fa fa-info-circle me-1"/>
+                            Yalnız yuxarıda göstərilən dəyərlərdən olan sənədlər
+                            görünəcək. Record filter ilə <b>AND</b> şərti kimi işləyir.
+                        </div>
+                        <div colspan="2" class="text-muted" invisible="status_field_id">
+                            <i class="fa fa-info-circle me-1"/>
+                            Status sahəsini seçin — istifadəçi yalnız seçilən
+                            statuslardakı sənədləri görəcək.
+                        </div>
+                    </group>
+
+                    <group string="Texniki məlumat (avtomatik)">
+                        <field name="access_id" readonly="1"/>
+                        <field name="rule_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- CONFIG FORM VIEW                                    -->
+    <!-- ================================================== -->
+    <record id="access_config_view_form" model="ir.ui.view">
+        <field name="name">access.config.form</field>
+        <field name="model">access.config</field>
+        <field name="arch" type="xml">
+            <form string="İcazə Konfiqurasiyası">
+                <header>
+                    <button name="action_apply"
+                            string="İcazələri Tətbiq Et"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-check"/>
+                    <button name="action_reset"
+                            string="Sıfırla"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-undo"
+                            invisible="state != 'applied'"
+                            confirm="Bu istifadəçinin bütün icazə qaydaları silinəcək. Davam edilsin?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,applied"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="user_id"
+                                   widget="many2one_avatar_user"
+                                   options="{'no_create': True}"
+                                   readonly="id"
+                                   placeholder="İstifadəçi seçin..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="last_apply_date" readonly="1"/>
+                            <field name="line_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="note" placeholder="Qeydlər..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="İcazə Sətirləri" name="lines">
+                            <field name="line_ids">
+                                <list >
+                                    <field name="model_id"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           string="Model"/>
+                                    <field name="filter_mode" string="Filter"/>
+                                    <field name="visible_user_ids" 
+                                           widget="many2many_tags" 
+                                           string="Əlavə userlər"
+                                           options="{'no_create': True}"
+                                           optional="show"/>
+                                    <field name="user_field_id"
+                                           string="Məsul sahə"
+                                           optional="show"
+                                           column_invisible="parent.state == 'applied'"/>
+                                    <field name="perm_read" widget="boolean_toggle" string="Oxu"/>
+                                    <field name="perm_write" widget="boolean_toggle" string="Yaz"/>
+                                    <field name="perm_create" widget="boolean_toggle" string="Yarat"/>
+                                    <field name="perm_unlink" widget="boolean_toggle" string="Sil"/>
+                                    <field name="active" widget="boolean_toggle" string="Aktiv" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="fa fa-info-circle me-1"/>
+                        <strong>Necə işləyir?</strong>
+                        <ol class="mb-0">
+                            <li>İstifadəçini seçin</li>
+                            <li>"Add a line" ilə model əlavə edin</li>
+                            <li>CRUD icazələri və filter rejimini seçin</li>
+                            <li><b>İcazələri Tətbiq Et</b> düyməsinə basın</li>
+                        </ol>
+                        <small class="text-muted">
+                            Qeyd: dəyişikliklər yalnız "Tətbiq Et" basıldıqdan
+                            sonra real təsir göstərir.
+                        </small>
+                    </div>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- CONFIG LIST VIEW                                    -->
+    <!-- ================================================== -->
+    <record id="access_config_view_tree" model="ir.ui.view">
+        <field name="name">access.config.list</field>
+        <field name="model">access.config</field>
+        <field name="arch" type="xml">
+            <list string="İcazə Konfiqurasiyaları"
+                  decoration-success="state == 'applied'"
+                  decoration-muted="state == 'draft'">
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="line_count" string="Sətir sayı"/>
+                <field name="last_apply_date" string="Son tətbiq"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'applied'"
+                       decoration-warning="state == 'draft'"/>
+                <button name="action_apply"
+                        string="Tətbiq et"
+                        type="object"
+                        icon="fa-check"
+                        class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- SEARCH VIEW                                         -->
+    <!-- ================================================== -->
+    <record id="access_config_view_search" model="ir.ui.view">
+        <field name="name">access.config.search</field>
+        <field name="model">access.config</field>
+        <field name="arch" type="xml">
+            <search string="Axtarış">
+                <field name="user_id" string="İstifadəçi"/>
+                <separator/>
+                <filter name="filter_applied" string="Tətbiq edilib"
+                        domain="[('state', '=', 'applied')]"/>
+                <filter name="filter_draft" string="Layihə"
+                        domain="[('state', '=', 'draft')]"/>
+                <group expand="0" string="Qruplaşdır">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- ACTION                                              -->
+    <!-- ================================================== -->
+    <record id="action_access_config" model="ir.actions.act_window">
+        <field name="name">İstifadəçi İcazələri</field>
+        <field name="res_model">access.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="access_config_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                İlk icazə konfiqurasiyasını əlavə edin!
+            </p>
+            <p>
+                Hər istifadəçi üçün ayrıca konfiqurasiya yaradın və
+                hansı modellərdə nə icazə vermək istədiyinizi təyin edin.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ── Payment methods (Nağd is the default — lowest sequence) ───── -->
+        <record id="pm_cash" model="finance.payment.method">
+            <field name="name">Nağd</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="pm_transfer" model="finance.payment.method">
+            <field name="name">Köçürmə</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="pm_card" model="finance.payment.method">
+            <field name="name">Kart</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- ── Expense categories (Cash Out) ────────────────────────────── -->
+        <record id="cat_expense" model="finance.category">
+            <field name="name">Xərc</field>
+            <field name="direction">expense</field>
+            <field name="detail_type">expense</field>
+        </record>
+        <record id="cat_salary" model="finance.category">
+            <field name="name">Əmək Haqqı</field>
+            <field name="direction">expense</field>
+            <field name="detail_type">employee</field>
+        </record>
+        <record id="cat_refund_student" model="finance.category">
+            <field name="name">Tələbəyə geri</field>
+            <field name="direction">expense</field>
+            <field name="detail_type">student</field>
+        </record>
+        <record id="cat_other_expense" model="finance.category">
+            <field name="name">Diğer</field>
+            <field name="direction">expense</field>
+            <field name="detail_type">none</field>
+        </record>
+
+        <!-- ── Income categories (Cash In) ──────────────────────────────── -->
+        <record id="cat_student_payment" model="finance.category">
+            <field name="name">Tələbə ödənişi</field>
+            <field name="direction">income</field>
+            <field name="detail_type">student</field>
+        </record>
+        <record id="cat_other_income" model="finance.category">
+            <field name="name">Diğer gəlir</field>
+            <field name="direction">income</field>
+            <field name="detail_type">none</field>
+        </record>
+
+    </data>
+</odoo>

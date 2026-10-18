@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Complete Trial Lesson Wizard ──────────────────────────────────── -->
+    <record id="view_trail_lesson_complete_wizard_form" model="ir.ui.view">
+        <field name="name">trail.lesson.complete.wizard.form</field>
+        <field name="model">trail.lesson.complete.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Complete Trial Lesson">
+
+                <sheet>
+                    <!-- Header banner -->
+                    <div class="alert alert-info mb-3" role="status">
+                        <i class="fa fa-graduation-cap me-2"/>
+                        Completing lesson for:
+                        <strong><field name="lesson_id" readonly="1" nolabel="1"/></strong>
+                    </div>
+
+                    <notebook>
+
+                        <!-- ── Tab 1: Student Background ─────────────────── -->
+                        <page string="Student Background" name="background">
+                            <group col="2">
+                                <group string="Personal">
+                                    <field name="gender"/>
+                                    <field name="approximate_age"/>
+                                    <field name="for_whom"/>
+                                    <field name="for_whom_note"
+                                           placeholder="e.g. son aged 12"
+                                           invisible="for_whom == 'self'"/>
+                                </group>
+                                <group string="Professional">
+                                    <field name="lesson_company_id"
+                                           options="{'no_open': True}"/>
+                                    <field name="position_id"
+                                           options="{'no_open': True}"/>
+                                    <field name="school_id"
+                                           options="{'no_open': True}"/>
+                                    <field name="english_level"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ── Tab 2: Q&A Session ────────────────────────── -->
+                        <page string="Q&amp;A Session" name="qa">
+                            <!-- Level picker: pulls the matching questions
+                                 from the Question Bank into the lines below. -->
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <label for="qa_level" class="mb-0 fw-bold"/>
+                                <field name="qa_level" nolabel="1" class="oe_inline"
+                                       placeholder="Select level…"/>
+                                <button name="action_load_questions"
+                                        type="object"
+                                        string="Reload Questions"
+                                        icon="fa-refresh"
+                                        class="btn btn-sm btn-secondary"
+                                        invisible="not qa_level"
+                                        confirm="This replaces the current lines with the questions of the selected level. Continue?"/>
+                            </div>
+                            <field name="qa_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="question_id" column_invisible="1"/>
+                                    <field name="question"
+                                           placeholder="Enter question…"/>
+                                    <field name="answer"
+                                           placeholder="Student's answer…"/>
+                                    <field name="translation"
+                                           placeholder="Translation (AZ/RU)…"/>
+                                </list>
+                            </field>
+                            <p class="text-muted ms-1 mt-1">
+                                <i class="fa fa-info-circle me-1"/>
+                                Questions are loaded from
+                                <b>Trail Lesson → Configurator → Question Bank</b>
+                                for the selected level. Every line can still be edited,
+                                added or removed right here.
+                            </p>
+                        </page>
+
+
+                        <!-- ── Tab 3: Assessment ─────────────────────────── -->
+                        <page string="Assessment" name="assessment">
+                            <group col="2">
+                                <group string="Evaluation">
+                                    <field name="comprehension"/>
+                                    <field name="motivation"/>
+                                    <field name="learning_purpose_id"
+                                           options="{'no_open': True}"/>
+                                </group>
+                                <group string="Background">
+                                    <field name="previous_courses"/>
+                                    <field name="course_id"
+                                           options="{'no_open': True}"
+                                           invisible="not previous_courses"
+                                           placeholder="Select previous course…"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ── Tab 4: Decision ───────────────────────────── -->
+                        <page string="Decision" name="decision">
+                            <group col="2">
+                                <group string="Outcome">
+                                    <field name="decision" required="1"/>
+                                    <field name="thinking_reason"
+                                           invisible="decision != 'thinking'"/>
+                                    <field name="lesson_format"/>
+                                    <!-- Join Timing + Expected Date — same row -->
+                                    <label for="join_timing"
+                                           invisible="payment_type == 'full'"/>
+                                    <div class="o_row"
+                                         invisible="payment_type == 'full'">
+                                        <field name="join_timing" nolabel="1"/>
+                                        <field name="expected_join_date"
+                                               nolabel="1"
+                                               placeholder="Expected date…"
+                                               invisible="not join_timing or join_timing == 'later'"/>
+                                    </div>
+                                </group>
+
+                                <group string="Payment &amp; Amount"
+                                       invisible="decision != 'joining'">
+                                    <field name="payment_type"
+                                           required="decision == 'joining' and join_timing == 'now'"/>
+                                    <field name="payment_amount"
+                                           required="decision == 'joining' and join_timing == 'now'"/>
+                                </group>
+                            </group>
+
+                            <group string="System Choosing">
+                                <field name="system_choice" widget="radio" nolabel="1"/>
+                                <field name="system_choice_note"
+                                       placeholder="Please specify…"
+                                       invisible="system_choice != 'other'"/>
+                            </group>
+
+                            <!-- Info note for remember-state cases -->
+                            <div class="alert alert-warning mt-2"
+                                 role="status"
+                                 invisible="not (decision == 'thinking' or (decision == 'joining' and join_timing and join_timing != 'now'))">
+                                <i class="fa fa-info-circle me-1"/>
+                                The student's applicant status will be set to
+                                <strong>Remember</strong> after completing this lesson.
+                            </div>
+
+                            <group string="Additional Notes">
+                                <field name="wizard_notes"
+                                       nolabel="1"
+                                       placeholder="Any extra observations…"
+                                       widget="text"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <footer>
+                    <button name="action_confirm"
+                            type="object"
+                            string="Complete Lesson"
+                            class="btn-primary"
+                            data-hotkey="v"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+</odoo>

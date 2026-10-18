@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lesson_record_user,lesson.record.user,model_lesson_record,base.group_system,1,1,1,1
+access_lesson_student_line_user,lesson.student.line.user,model_lesson_student_line,base.group_system,1,1,1,1
+access_lesson_homework_wizard_user,lesson.homework.wizard.user,model_lesson_homework_wizard,base.group_system,1,1,1,1

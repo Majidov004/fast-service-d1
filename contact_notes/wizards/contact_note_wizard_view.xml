@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_contact_note_wizard_form" model="ir.ui.view">
+      <field name="name">contact.note.wizard.form</field>
+      <field name="model">contact.note.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Add Note">
+          <group>
+            <field name="partner_id" invisible="1"/>
+            <field name="employee_id" readonly="1"/>
+            <field name="text" nolabel="1" placeholder="Write your note here…" widget="text"/>
+          </group>
+          <footer>
+            <button name="action_save" string="Save" type="object" class="btn-primary"/>
+            <button string="Cancel" class="btn-secondary" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+  </data>
+</odoo>

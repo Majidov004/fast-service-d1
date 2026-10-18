@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="trail_lesson_form_view" model="ir.ui.view">
+        <field name="name">trail.lesson.form</field>
+        <field name="model">trail.lesson</field>
+        <field name="arch" type="xml">
+            <form string="Trail Lesson">
+
+                <header>
+                    <button name="save_manually"
+                            string="Save"
+                            type="object"
+                            special="save"
+                            class="btn-secondary"
+                            icon="fa-floppy-o"
+                            invisible="state == 'planned'"/>
+
+                    <button name="action_modify"
+                            string="Modify"
+                            type="object"
+                            class="btn-warning"
+                            icon="fa-pencil"
+                            invisible="state != 'planned'"/>
+
+                    <button name="action_schedule"
+                            string="Schedule Trial"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'not_planned'"/>
+
+                    <button name="action_complete"
+                            string="Complete Trial"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'planned'"/>
+
+                    <button name="action_missing"
+                            string="Missing Lesson"
+                            type="object"
+                            class="btn-danger"
+                            icon="fa-times-circle"
+                            invisible="state != 'planned'"
+                            confirm="Mark this lesson as NOT conducted (Missing)?"/>
+
+                    <button name="action_plan_new_trial"
+                            string="Plan New Trial"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-calendar-plus-o"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="not_planned,planned,completed,missing"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Lesson Details">
+                            <field name="teacher_id"
+                                   options="{'no_create': True}"/>
+                            <field name="student_id"
+                                   options="{'no_create': True}"
+                                   readonly="state != 'not_planned'"/>
+                            <field name="lesson_datetime"/>
+                        </group>
+                        <group string="Video">
+                            <field name="video_record"
+                                   widget="binary"
+                                   filename="video_record_filename"/>
+                            <field name="video_record_filename" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- Notes tab -->
+                        <page string="Notes" name="notes_tab">
+                            <field name="notes"
+                                   widget="html"
+                                   placeholder="Write your notes here…"
+                                   style="min-height:200px;"/>
+                        </page>
+
+                        <!-- Assessment tab (visible once completed) -->
+                        <page string="Assessment" name="assessment_tab"
+                              invisible="state != 'completed'">
+                            <group col="2">
+                                <group string="Student Background">
+                                    <field name="gender"/>
+                                    <field name="approximate_age"/>
+                                    <field name="lesson_company_id"/>
+                                    <field name="position_id"/>
+                                    <field name="school_id"/>
+                                    <field name="english_level"/>
+                                    <field name="for_whom"/>
+                                    <field name="for_whom_note"
+                                           invisible="for_whom == 'self'"/>
+                                </group>
+                                <group string="Evaluation">
+                                    <field name="comprehension"/>
+                                    <field name="motivation"/>
+                                    <field name="learning_purpose_id"/>
+                                    <field name="previous_courses"/>
+                                    <field name="course_id"
+                                           invisible="not previous_courses"/>
+                                </group>
+                            </group>
+
+                            <!-- Q&A lines -->
+                            <separator string="Q&amp;A Session"/>
+                            <field name="qa_ids" nolabel="1">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="question"/>
+                                    <field name="answer"/>
+                                    <field name="translation"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Decision tab -->
+                        <page string="Decision" name="decision_tab"
+                              invisible="state != 'completed'">
+                            <group col="2">
+                                <group>
+                                    <field name="decision" widget="radio"/>
+                                    <field name="thinking_reason"
+                                           invisible="decision != 'thinking'"/>
+                                    <field name="lesson_format"/>
+                                    <field name="join_timing"/>
+                                    <field name="expected_join_date"
+                                           invisible="not join_timing or join_timing == 'later'"/>
+                                </group>
+                                <group invisible="decision != 'joining'">
+                                    <field name="payment_type"/>
+                                    <field name="payment_amount"/>
+                                </group>
+                            </group>
+                            <group string="System Choosing">
+                                <field name="system_choice" widget="radio"/>
+                            </group>
+                        </page>
+
+                        <!-- Video preview tab -->
+                        <page string="Record Preview" name="record_preview_tab"
+                              invisible="state != 'completed'">
+                            <field name="video_preview_html"
+                                   widget="html"
+                                   readonly="1"
+                                   nolabel="1"/>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Tree / List View ───────────────────────────────────────────── -->
+    <record id="trail_lesson_tree_view" model="ir.ui.view">
+        <field name="name">trail.lesson.tree</field>
+        <field name="model">trail.lesson</field>
+        <field name="arch" type="xml">
+            <list string="Trail Lessons"
+                  decoration-success="state == 'completed'"
+                  decoration-info="state == 'planned'"
+                  decoration-danger="state == 'missing'"
+                  decoration-muted="state == 'not_planned'">
+                <field name="name"/>
+                <field name="teacher_id"/>
+                <field name="student_id"/>
+                <field name="lesson_datetime"/>
+                <field name="english_level"/>
+                <field name="decision"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-success="state == 'completed'"
+                       decoration-info="state == 'planned'"
+                       decoration-warning="state == 'not_planned'"
+                       decoration-danger="state == 'missing'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <record id="trail_lesson_search_view" model="ir.ui.view">
+        <field name="name">trail.lesson.search</field>
+        <field name="model">trail.lesson</field>
+        <field name="arch" type="xml">
+            <search string="Search Trail Lessons">
+                <field name="name"/>
+                <field name="teacher_id"/>
+                <field name="student_id"/>
+                <filter string="Not Planned" name="not_planned"
+                        domain="[('state','=','not_planned')]"/>
+                <filter string="Planned" name="planned"
+                        domain="[('state','=','planned')]"/>
+                <filter string="Completed" name="completed"
+                        domain="[('state','=','completed')]"/>
+                <filter string="Missing Lesson" name="missing"
+                        domain="[('state','=','missing')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Teacher" name="group_teacher"
+                            context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Decision" name="group_decision"
+                            context="{'group_by': 'decision'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ─────────────────────────────────────────────────────── -->
+    <record id="trail_lesson_action" model="ir.actions.act_window">
+        <field name="name">Trail Lessons</field>
+        <field name="res_model">trail.lesson</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="trail_lesson_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first trail lesson!
+            </p>
+            <p>
+                Create and manage trial lessons between teachers and students,
+                upload video recordings and track their progress.
+            </p>
+        </field>
+    </record>
+
+    <!-- ── Sequence ───────────────────────────────────────────────────── -->
+    <record id="seq_trail_lesson" model="ir.sequence">
+        <field name="name">Trail Lesson Sequence</field>
+        <field name="code">trail.lesson</field>
+        <field name="prefix">TL/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+</odoo>

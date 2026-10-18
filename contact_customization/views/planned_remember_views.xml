@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+
+    <!-- ── List View ─────────────────────────────────────────────────────── -->
+    <record id="view_planned_remember_list" model="ir.ui.view">
+      <field name="name">res.partner.planned.remember.list</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <list string="Planned Remember">
+          <field name="name"                       string="Full Name"/>
+          <field name="phone"                      string="Phone"/>
+          <field name="mobile"                     string="Mobile"/>
+          <field name="email"                      string="Email"/>
+          <field name="manager_id"                 string="Manager"/>
+          <field name="planned_remember_date"      string="Planned Date"/>
+          <field name="planned_remember_employee_id" string="Planned By"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- ── Action ────────────────────────────────────────────────────────── -->
+    <record id="action_planned_remember" model="ir.actions.act_window">
+      <field name="name">Planned Remember</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">list,form</field>
+      <field name="domain">[('is_applicant', '=', True), ('applicant_state', '=', 'planned_remember')]</field>
+      <field name="context">{'default_is_applicant': True, 'default_applicant_state': 'planned_remember'}</field>
+      <field name="view_ids" eval="[
+        (5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('view_planned_remember_list')}),
+      ]"/>
+    </record>
+
+    <!-- ── Menu ──────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_planned_remember"
+              name="Planned Remember"
+              parent="contacts.menu_contacts"
+              action="action_planned_remember"
+              sequence="2"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_language_level_user,hr.language.level user,model_hr_language_level,base.group_system,1,1,1,0
+access_language_level_manager,hr.language.level manager,model_hr_language_level,hr.group_hr_manager,1,1,1,1
+access_employee_availability_user,hr.employee.availability user,model_hr_employee_availability,base.group_system,1,1,1,1
+access_employee_language_user,hr.employee.language user,model_hr_employee_language,base.group_system,1,1,1,1
+access_employee_experience_user,hr.employee.experience user,model_hr_employee_experience,base.group_system,1,1,1,1
+access_employee_certificate_user,hr.employee.certificate user,model_hr_employee_certificate,base.group_system,1,1,1,1
+access_hr_language_user,hr.language user,model_hr_language,base.group_system,1,1,1,1
+access_hr_certificate_type_user,hr.certificate.type user,model_hr_certificate_type,base.group_system,1,1,1,1
+access_hr_faculty_user,hr.faculty user,model_hr_faculty,base.group_system,1,1,1,1

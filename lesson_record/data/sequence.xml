@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Lesson Record (if needed in future) -->
+        <record id="seq_lesson_record" model="ir.sequence">
+            <field name="name">Lesson Record Sequence</field>
+            <field name="code">lesson.record</field>
+            <field name="prefix">LSN/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+        </record>
+    </data>
+</odoo>

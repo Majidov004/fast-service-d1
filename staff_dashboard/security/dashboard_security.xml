@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Dashboard-a giriş üçün xüsusi qrup. İstifadəçilərə Settings → Users-dən
+         əl ilə verilir (dashboard OWL client action olduğu üçün access_manager
+         model ACL-i ilə açıla bilmir). -->
+    <record id="module_category_staff_dashboard" model="ir.module.category">
+        <field name="name">Staff Dashboard</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="group_dashboard_user" model="res.groups">
+        <field name="name">Dashboard Access</field>
+        <field name="category_id" ref="module_category_staff_dashboard"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="finance.Dashboard">
+    <div class="o_finance_dashboard">
+
+      <!-- Header + global period -->
+      <div class="o_fin_header">
+        <h2><i class="fa fa-money me-2"/>Finance Dashboard</h2>
+        <div class="o_fin_header_right">
+          <FilterSelect icon="'fa-calendar'" value="state.period" options="periodOptions"
+                        onSelect="(v) => this.setOverviewPeriod(v)"/>
+          <t t-if="state.period === 'between'">
+            <FilterDate label="'From'" value="state.dateFrom"
+                        onSelect="(v) => this.setGlobalDate('from', v)"/>
+            <FilterDate label="'To'" value="state.dateTo"
+                        onSelect="(v) => this.setGlobalDate('to', v)"/>
+          </t>
+          <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.refresh()">
+            <i class="fa fa-refresh me-1"/> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div t-if="state.loading" class="o_fin_loading">
+        <i class="fa fa-spinner fa-spin"/> Loading...
+      </div>
+
+      <t t-else="">
+        <!-- ── KPI strip ─────────────────────────────────────────── -->
+        <div class="o_fin_kpis" t-if="state.overview">
+          <div class="o_kpi o_kpi_balance">
+            <div class="o_kpi_label">Total Balance</div>
+            <div class="o_kpi_value"><t t-esc="state.overview.kpi.total_balance"/></div>
+          </div>
+          <div class="o_kpi o_kpi_in">
+            <div class="o_kpi_label">Money In</div>
+            <div class="o_kpi_value"><t t-esc="state.overview.kpi.total_in"/></div>
+          </div>
+          <div class="o_kpi o_kpi_out">
+            <div class="o_kpi_label">Money Out</div>
+            <div class="o_kpi_value"><t t-esc="state.overview.kpi.total_out"/></div>
+          </div>
+          <div t-attf-class="o_kpi {{ state.overview.kpi.net_positive ? 'o_kpi_net_pos' : 'o_kpi_net_neg' }}">
+            <div class="o_kpi_label">Net Flow</div>
+            <div class="o_kpi_value"><t t-esc="state.overview.kpi.net"/></div>
+          </div>
+          <div class="o_kpi o_kpi_draft">
+            <div class="o_kpi_label">Pending Drafts</div>
+            <div class="o_kpi_value"><t t-esc="state.overview.kpi.draft_count"/></div>
+          </div>
+        </div>
+
+        <!-- ── Cash registers (left) + Category breakdown (right) ─── -->
+        <div class="o_fin_midrow">
+
+          <!-- Left: cash register cards, scrollable -->
+          <div class="o_fin_panel o_fin_kassa_panel">
+            <div class="o_fin_panel_title">Cash Registers</div>
+            <div t-if="state.cards.length === 0" class="o_fin_muted">
+              No cash registers yet. Add one in Configuration → Cash Registers.
+            </div>
+            <div t-else="" class="o_fin_scroll o_fin_kassa_scroll">
+              <div t-foreach="state.cards" t-as="card" t-key="card.id" class="o_fin_card">
+                <div class="o_fin_card_head">
+                  <span class="o_fin_card_name"><i class="fa fa-archive me-1"/><t t-esc="card.name"/></span>
+                  <span class="o_fin_card_balance" t-att-title="'Current balance'"><t t-esc="card.balance_fmt"/></span>
+                </div>
+                <div class="o_fin_card_filter">
+                  <FilterSelect value="card.period" options="periodOptions"
+                                onSelect="(v) => this.setCardPeriod(card, v)"/>
+                  <t t-if="card.period === 'between'">
+                    <FilterDate label="'From'" value="card.date_from"
+                                onSelect="(v) => this.setCardDate(card, 'from', v)"/>
+                    <FilterDate label="'To'" value="card.date_to"
+                                onSelect="(v) => this.setCardDate(card, 'to', v)"/>
+                  </t>
+                </div>
+                <div class="o_fin_flows">
+                  <div class="o_fin_flow o_fin_in">
+                    <div class="o_fin_flow_label">Money In</div>
+                    <div class="o_fin_flow_amt"><t t-esc="card.money_in_fmt"/></div>
+                    <div t-if="card.in_pct.has"
+                         t-attf-class="o_fin_pct o_fin_pct_{{ card.in_pct.dir }}"
+                         t-attf-title="Money in change vs {{ card.prev_label }}">
+                      <i t-attf-class="fa {{ card.in_pct.dir === 'up' ? 'fa-arrow-up' : (card.in_pct.dir === 'down' ? 'fa-arrow-down' : 'fa-minus') }}"/>
+                      <t t-esc="card.in_pct.value"/>%
+                    </div>
+                  </div>
+                  <div class="o_fin_flow o_fin_out">
+                    <div class="o_fin_flow_label">Money Out</div>
+                    <div class="o_fin_flow_amt"><t t-esc="card.money_out_fmt"/></div>
+                    <div t-if="card.out_pct.has"
+                         t-attf-class="o_fin_pct o_fin_pct_{{ card.out_pct.dir }}"
+                         t-attf-title="Money out change vs {{ card.prev_label }}">
+                      <i t-attf-class="fa {{ card.out_pct.dir === 'up' ? 'fa-arrow-up' : (card.out_pct.dir === 'down' ? 'fa-arrow-down' : 'fa-minus') }}"/>
+                      <t t-esc="card.out_pct.value"/>%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: category breakdown per register, scrollable -->
+          <div class="o_fin_panel o_fin_cat_panel">
+            <div class="o_fin_panel_title o_fin_panel_title_row">
+              <span>Category Breakdown by Register</span>
+              <button class="btn btn-sm btn-outline-secondary o_fin_detail_btn"
+                      t-on-click="() => this.openDetailed()">
+                <i class="fa fa-list-alt me-1"/> Detailed
+              </button>
+            </div>
+            <div t-if="!state.overview or state.overview.categories_by_register.length === 0" class="o_fin_muted">
+              No cash registers.
+            </div>
+            <div t-else="" class="o_fin_scroll o_fin_catreg_scroll">
+              <div t-foreach="state.overview.categories_by_register" t-as="reg" t-key="reg.register_id"
+                   class="o_fin_rcard">
+                <div class="o_fin_rcard_head">
+                  <span class="o_fin_rcard_name"><i class="fa fa-archive me-1"/><t t-esc="reg.register_name"/></span>
+                </div>
+                <div t-if="!reg.has_data" class="o_fin_muted o_fin_sm">No transactions.</div>
+                <table t-else="" class="o_fin_cat_table">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th class="o_right">In</th>
+                      <th class="o_right">Out</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr t-foreach="reg.items" t-as="cat" t-key="cat.id">
+                      <td><t t-esc="cat.name"/></td>
+                      <td t-attf-class="o_right {{ cat.in_fmt ? 'o_in' : '' }}"><t t-esc="cat.in_fmt or '—'"/></td>
+                      <td t-attf-class="o_right {{ cat.out_fmt ? 'o_out' : '' }}"><t t-esc="cat.out_fmt or '—'"/></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="o_fin_cat_total">
+                      <td>Total</td>
+                      <td class="o_right o_in"><t t-esc="reg.total_in_fmt"/></td>
+                      <td class="o_right o_out"><t t-esc="reg.total_out_fmt"/></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Recent transactions ───────────────────────────────── -->
+        <div class="o_fin_panel o_fin_recent">
+          <div class="o_fin_panel_title">Recent Transactions</div>
+          <div t-if="!state.overview or state.overview.recent.length === 0" class="o_fin_muted">
+            No transactions yet.
+          </div>
+          <table t-else="" class="o_fin_table">
+            <thead>
+              <tr>
+                <th>Document</th><th>Date</th><th>Register</th><th>Category</th>
+                <th class="o_right">Amount</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="state.overview.recent" t-as="r" t-key="r.id"
+                  class="o_fin_row" t-on-click="() => this.openMove(r.id)">
+                <td><t t-esc="r.name"/></td>
+                <td><t t-esc="r.date"/></td>
+                <td><t t-esc="r.register"/></td>
+                <td><t t-esc="r.category"/></td>
+                <td t-attf-class="o_right {{ r.move_type === 'cash_in' ? 'o_in' : 'o_out' }}">
+                  <t t-esc="r.move_type === 'cash_in' ? '+' : '-'"/><t t-esc="r.amount_fmt"/>
+                </td>
+                <td>
+                  <span t-attf-class="o_fin_badge o_st_{{ r.state }}"><t t-esc="r.state"/></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </t>
+
+    </div>
+  </t>
+
+</templates>

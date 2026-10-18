@@ -1,0 +1,294 @@
+/* ── Meeting tab: mini lesson cards ─────────────────────────────────────── */
+.o_tm_meeting {
+    padding: 8px 4px;
+}
+
+.o_tm_empty {
+    color: #8a8a8a;
+    font-style: italic;
+    padding: 24px 8px;
+    text-align: center;
+}
+
+.o_tm_cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.o_tm_card {
+    flex: 1 1 220px;
+    max-width: 260px;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #00a09d;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.o_tm_card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* completed lessons are dimmed */
+.o_tm_card.o_tm_done {
+    opacity: 0.55;
+    border-left-color: #9e9e9e;
+    background: #f7f7f7;
+}
+
+.o_tm_card_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.o_tm_num {
+    font-weight: 700;
+    color: #555;
+}
+
+.o_tm_badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.o_tm_badge_done {
+    background: #e8f0e8;
+    color: #4a7a4a;
+}
+
+.o_tm_badge_sched {
+    background: #fff3cd;
+    color: #8a6d00;
+}
+
+.o_tm_badge_extra {
+    background: #e7e0fb;
+    color: #5b3fb0;
+}
+
+/* extra (topic-repeat) lessons get a violet accent */
+.o_tm_card.o_tm_extra {
+    border-left-color: #7a5cd0;
+}
+
+.o_tm_del {
+    line-height: 1;
+}
+
+/* ── Completion question step ───────────────────────────────────────────── */
+.o_tm_question {
+    padding: 24px 12px;
+    text-align: center;
+}
+
+.o_tm_question_title {
+    margin-bottom: 10px;
+}
+
+.o_tm_question_hint {
+    color: #777;
+    font-size: 13px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.o_tm_card_name {
+    font-weight: 600;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.o_tm_card_meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+.o_tm_card_foot {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+}
+
+.o_tm_present { color: #28a745; }
+.o_tm_absent { color: #dc3545; }
+.o_tm_total { color: #6c757d; }
+
+/* ── Popup dialog ───────────────────────────────────────────────────────── */
+.o_tm_dialog_loading {
+    padding: 32px;
+    text-align: center;
+    color: #8a8a8a;
+}
+
+.o_tm_dialog {
+    max-width: 100%;
+}
+
+.o_tm_dialog_head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    color: #666;
+    font-size: 13px;
+}
+
+.o_tm_dialog_body {
+    display: flex;
+    gap: 16px;
+    min-height: 200px;
+}
+
+.o_tm_students {
+    width: 200px;
+    flex-shrink: 0;
+    border-right: 1px solid #eee;
+    padding-right: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.o_tm_student {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.o_tm_student:hover {
+    background: #f1f1f1;
+}
+
+.o_tm_student.o_tm_active {
+    background: #e7f3f3;
+    font-weight: 600;
+}
+
+.o_tm_student_name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.o_tm_dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.o_tm_dot_present { background: #28a745; }
+.o_tm_dot_absent { background: #dc3545; }
+
+.o_tm_editor {
+    flex: 1;
+    min-width: 0;
+}
+
+.o_tm_editor_name {
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+.o_tm_att_toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.o_tm_att_toggle .btn {
+    flex: 1;
+}
+
+.o_tm_label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.o_tm_dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #999;
+}
+
+.o_tm_lesson_note {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+/* ── Mobile / narrow screens ────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    /* full-width lesson cards */
+    .o_tm_card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    /* stack the popup body: students on top, editor below */
+    .o_tm_dialog_body {
+        flex-direction: column;
+        gap: 12px;
+        min-height: 0;
+    }
+
+    /* student picker becomes a horizontal scrolling chip row */
+    .o_tm_students {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-height: none;
+        padding: 0 0 8px 0;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o_tm_student {
+        flex: 0 0 auto;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 0;
+    }
+
+    .o_tm_student.o_tm_active {
+        border-color: #00a09d;
+    }
+
+    .o_tm_student_name {
+        max-width: 140px;
+    }
+
+    .o_tm_att_toggle .btn {
+        padding: 10px;
+    }
+}

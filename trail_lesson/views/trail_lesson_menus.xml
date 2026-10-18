@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Top-level menu ─────────────────────────────────────────────── -->
+    <menuitem id="menu_trail_lesson_root"
+              name="Trail Lesson"
+              sequence="50"
+              web_icon="trail_lesson,static/description/icon.png"/>
+
+    <!-- ── Trail Lessons ──────────────────────────────────────────────── -->
+    <menuitem id="menu_trail_lesson_main"
+              name="Trail Lessons"
+              parent="menu_trail_lesson_root"
+              action="trail_lesson.trail_lesson_action"
+              sequence="10"/>
+
+    <!-- ── Configurator (parent) ──────────────────────────────────────── -->
+    <menuitem id="menu_trail_lesson_config"
+              name="Configurator"
+              parent="menu_trail_lesson_root"
+              sequence="90"/>
+
+    <!-- ── Configurator children ──────────────────────────────────────── -->
+    <menuitem id="menu_trail_config_company"
+              name="Companies"
+              parent="menu_trail_lesson_config"
+              action="trail_lesson.action_trail_config_company"
+              sequence="10"/>
+
+    <menuitem id="menu_trail_config_position"
+              name="Positions / Titles"
+              parent="menu_trail_lesson_config"
+              action="trail_lesson.action_trail_config_position"
+              sequence="20"/>
+
+    <menuitem id="menu_trail_config_course"
+              name="Courses"
+              parent="menu_trail_lesson_config"
+              action="trail_lesson.action_trail_config_course"
+              sequence="30"/>
+
+    <menuitem id="menu_trail_config_school"
+              name="Schools"
+              parent="menu_trail_lesson_config"
+              action="trail_lesson.action_trail_config_school"
+              sequence="40"/>
+
+    <menuitem id="menu_trail_config_learning_purpose"
+              name="Learning Purposes"
+              parent="menu_trail_lesson_config"
+              action="trail_lesson.action_trail_config_learning_purpose"
+              sequence="50"/>
+
+    <menuitem id="menu_trail_lesson_questions"
+              name="Question Bank"
+              parent="menu_trail_lesson_config"
+              action="trail_lesson.action_trail_lesson_question"
+              sequence="5"/>
+
+</odoo>

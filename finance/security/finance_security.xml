@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Finance Dashboard və Reporting OWL client action olduğu üçün access_manager
+         model ACL-i ilə açıla bilmir. Bu qrup həmin ekranlara girişi idarə edir;
+         istifadəçilərə Settings → Users-dən əl ilə verilir. Əməliyyat menyuları
+         (Cash In/Out, Transfer, Configuration) isə model ACL-inə görə avtomatik
+         görünür/gizlənir — onlar bu qrupdan asılı deyil. -->
+    <record id="module_category_finance" model="ir.module.category">
+        <field name="name">Finance</field>
+        <field name="sequence">51</field>
+    </record>
+
+    <record id="group_finance_user" model="res.groups">
+        <field name="name">Finance Dashboard &amp; Reports</field>
+        <field name="category_id" ref="module_category_finance"/>
+    </record>
+
+</odoo>

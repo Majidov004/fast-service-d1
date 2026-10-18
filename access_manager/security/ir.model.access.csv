@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_access_config_admin,access.config.admin,model_access_config,base.group_system,1,1,1,1
+access_access_config_line_admin,access.config.line.admin,model_access_config_line,base.group_system,1,1,1,1
+access_access_status_value_admin,access.status.value.admin,model_access_status_value,base.group_system,1,1,1,1
+access_access_role_admin,access.role.admin,model_access_role,base.group_system,1,1,1,1
+access_access_role_line_admin,access.role.line.admin,model_access_role_line,base.group_system,1,1,1,1
+access_access_role_status_value_admin,access.role.status.value.admin,model_access_role_status_value,base.group_system,1,1,1,1

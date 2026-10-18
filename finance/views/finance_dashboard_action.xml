@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_finance_dashboard" model="ir.actions.client">
+        <field name="name">Finance Dashboard</field>
+        <field name="tag">finance.Dashboard</field>
+    </record>
+
+    <record id="action_finance_operations_report" model="ir.actions.client">
+        <field name="name">Operations Detail</field>
+        <field name="tag">finance.OperationsReport</field>
+    </record>
+
+    <record id="action_finance_customer_report" model="ir.actions.client">
+        <field name="name">Customer Financials</field>
+        <field name="tag">finance.CustomerReport</field>
+    </record>
+
+</odoo>

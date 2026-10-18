@@ -1,0 +1,658 @@
+.o_finance_dashboard {
+    padding: 20px;
+    background: #f5f6fa;
+    /* Root is the single scroll container so the lower panels (Recent
+       Transactions) stay reachable when content exceeds the action height. */
+    height: 100%;
+    overflow-y: auto;
+}
+
+.o_fin_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.o_fin_header h2 {
+    margin: 0;
+    font-weight: 600;
+    color: #2b2b48;
+}
+
+.o_fin_header_right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.o_fin_loading,
+.o_fin_muted {
+    color: #888;
+    font-style: italic;
+    padding: 16px 0;
+}
+
+.o_fin_section_title {
+    font-weight: 600;
+    color: #2b2b48;
+    margin: 22px 0 12px;
+    font-size: 1.05rem;
+}
+
+/* ── KPI strip ────────────────────────────────────────── */
+.o_fin_kpis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.o_kpi {
+    flex: 1;
+    min-width: 170px;
+    background: #fff;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #875a7b;
+}
+
+.o_kpi_label {
+    font-size: 0.78rem;
+    color: #777;
+    margin-bottom: 6px;
+}
+
+.o_kpi_value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2b2b48;
+    white-space: nowrap;
+}
+
+.o_kpi_balance { border-left-color: #00a09d; }
+.o_kpi_in { border-left-color: #1e9e5a; }
+.o_kpi_in .o_kpi_value { color: #1e9e5a; }
+.o_kpi_out { border-left-color: #e74c3c; }
+.o_kpi_out .o_kpi_value { color: #e74c3c; }
+.o_kpi_net_pos { border-left-color: #1e9e5a; }
+.o_kpi_net_neg { border-left-color: #e74c3c; }
+.o_kpi_net_neg .o_kpi_value { color: #e74c3c; }
+.o_kpi_draft { border-left-color: #f0a020; }
+
+/* ── Panels ───────────────────────────────────────────── */
+.o_fin_panel {
+    background: #fff;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.o_fin_panel_title {
+    font-weight: 600;
+    color: #2b2b48;
+    margin-bottom: 12px;
+}
+
+.o_fin_panel_title_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.o_fin_midrow {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+    align-items: stretch;
+}
+
+.o_fin_kassa_panel { flex: 1.6; min-width: 0; }
+.o_fin_cat_panel { flex: 1; min-width: 280px; }
+
+/* Shared scroll area inside mid-row panels — fixed height so the panel never
+   grows; extra content scrolls inside. */
+.o_fin_scroll {
+    height: 360px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Cash register cards inside the left panel */
+.o_fin_kassa_scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-content: flex-start;
+}
+.o_fin_kassa_scroll .o_fin_card { width: 300px; margin: 0; }
+
+/* Category-per-register cards (right panel) */
+.o_fin_rcard {
+    background: #fff;
+    border: 1px solid #eceef3;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.o_fin_rcard_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #f0f1f5;
+}
+.o_fin_rcard_name { font-weight: 700; font-size: 0.92rem; color: #2b2b48; }
+
+/* Category table inside each register card */
+.o_fin_cat_table { width: 100%; border-collapse: collapse; }
+.o_fin_cat_table th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: #9aa0ad;
+    padding: 3px 8px;
+    border-bottom: 1px solid #eef0f5;
+}
+.o_fin_cat_table td {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    color: #444;
+    border-bottom: 1px solid #f5f6f9;
+}
+.o_fin_cat_table .o_right { text-align: right; white-space: nowrap; }
+.o_fin_cat_total td {
+    font-weight: 700;
+    color: #2b2b48;
+    border-top: 2px solid #eef0f5;
+    border-bottom: none;
+}
+.o_fin_cat_total .o_in { color: #15824a; }
+.o_fin_cat_total .o_out { color: #c0392b; }
+
+.o_fin_sm { font-size: 0.8rem; padding: 2px 0 6px; }
+
+/* ── Categories ───────────────────────────────────────── */
+.o_fin_cats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.o_fin_cat_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+    font-size: 0.86rem;
+}
+
+.o_fin_cat_name { color: #444; font-weight: 500; }
+.o_fin_cat_amt { color: #2b2b48; font-weight: 600; white-space: nowrap; }
+
+.o_fin_cat_bar {
+    height: 8px;
+    background: #eef0f5;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.o_fin_cat_fill {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.o_fin_cat_fill.o_in { background: #1e9e5a; }
+.o_fin_cat_fill.o_out { background: #e74c3c; }
+.o_in { color: #1e9e5a; }
+.o_out { color: #e74c3c; }
+
+/* ── Recent table ─────────────────────────────────────── */
+.o_fin_recent { margin-bottom: 18px; }
+
+.o_fin_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.o_fin_table th {
+    text-align: left;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    color: #999;
+    border-bottom: 2px solid #eef0f5;
+    padding: 6px 10px;
+}
+
+.o_fin_table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f0f1f5;
+    font-size: 0.88rem;
+    color: #333;
+}
+
+.o_fin_table .o_right { text-align: right; white-space: nowrap; font-weight: 600; }
+
+.o_fin_row { cursor: pointer; transition: background 0.12s; }
+.o_fin_row:hover { background: #f7f6fa; }
+
+.o_fin_badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 1px 9px;
+    text-transform: capitalize;
+}
+
+.o_st_draft { background: #e7eef9; color: #2b6cb0; }
+.o_st_confirmed { background: #d6f3e2; color: #15824a; }
+.o_st_cancelled { background: #e7e9ef; color: #777; }
+
+/* ── Cards grid ───────────────────────────────────────── */
+.o_fin_cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.o_fin_card {
+    background: #ffffff;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    padding: 16px 18px;
+    width: 320px;
+    box-sizing: border-box;
+}
+
+.o_fin_card_head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.o_fin_card_name { font-weight: 700; font-size: 1.02rem; color: #2b2b48; }
+.o_fin_card_balance { font-weight: 700; font-size: 1.05rem; color: #00a09d; white-space: nowrap; }
+
+/* ── Period selector ──────────────────────────────────── */
+.o_fin_period {
+    display: inline-flex;
+    border: 1px solid #d9dee8;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.o_fin_period_global { margin-bottom: 0; }
+
+.o_fin_pbtn {
+    background: #fff;
+    border: none;
+    padding: 4px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: #555;
+    border-right: 1px solid #d9dee8;
+    transition: background 0.15s, color 0.15s;
+}
+
+.o_fin_pbtn:last-child { border-right: none; }
+.o_fin_pbtn:hover { background: #f0eef3; }
+.o_fin_pbtn.active { background: #875a7b; color: #fff; }
+
+/* per-card filter row */
+.o_fin_card_filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+/* ── Styled filters (FilterSelect / FilterDate) ───────── */
+@keyframes o_filters_slide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.o_filter_label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #8a8f99;
+    margin: 0;
+}
+
+.o_filter_label .fa { color: #a78bb5; }
+
+.o_fsel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 150px;
+}
+
+.o_fsel_trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    height: 34px;
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    color: #333;
+    background: #fff;
+    border: 1px solid #dfe3ea;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_fsel_trigger:hover { border-color: #c9b3d6; }
+
+.o_fsel_trigger.o_open {
+    border-color: #875a7b;
+    box-shadow: 0 0 0 3px rgba(135, 90, 123, 0.14);
+}
+
+.o_fsel_value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.o_fsel_placeholder { color: #9aa0a8; }
+
+.o_fsel_caret {
+    color: #9aa0a8;
+    font-size: 0.85rem;
+    transition: transform 0.18s ease;
+}
+
+.o_fsel_trigger.o_open .o_fsel_caret { transform: rotate(180deg); }
+
+.o_fsel_menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #e6e0ec;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(60, 40, 70, 0.18);
+    animation: o_filters_slide 0.14s ease-out;
+}
+
+.o_fsel_opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 0.83rem;
+    color: #444;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.o_fsel_search {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 6px;
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    color: #333;
+    border: 1px solid #dfe3ea;
+    border-radius: 7px;
+    outline: none;
+}
+.o_fsel_search:focus {
+    border-color: #875a7b;
+    box-shadow: 0 0 0 3px rgba(135, 90, 123, 0.14);
+}
+
+.o_fsel_empty { color: #9aa0a8; cursor: default; justify-content: center; }
+.o_fsel_empty:hover { background: transparent; color: #9aa0a8; }
+
+.o_fsel_opt:hover { background: #f3ebf1; color: #875a7b; }
+
+.o_fsel_opt.o_active {
+    background: #875a7b;
+    color: #fff;
+    font-weight: 600;
+}
+
+.o_fsel_opt_check { font-size: 0.78rem; }
+
+.o_fsel_menu::-webkit-scrollbar { width: 8px; }
+.o_fsel_menu::-webkit-scrollbar-thumb { background: #d8cbe1; border-radius: 8px; }
+
+/* mini calendar */
+.o_fcal {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 40;
+    width: 248px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #e6e0ec;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(60, 40, 70, 0.18);
+    animation: o_filters_slide 0.14s ease-out;
+}
+
+.o_fcal_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.o_fcal_title { font-weight: 700; font-size: 0.86rem; color: #4a2f44; }
+
+.o_fcal_nav {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    background: #f3ebf1;
+    color: #875a7b;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.o_fcal_nav:hover { background: #875a7b; color: #fff; }
+
+.o_fcal_dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 4px;
+}
+
+.o_fcal_dow span {
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #b3a7bd;
+    padding: 2px 0;
+}
+
+.o_fcal_grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.o_fcal_cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    font-size: 0.8rem;
+    color: #444;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.o_fcal_cell.o_empty { cursor: default; }
+.o_fcal_cell:not(.o_empty):hover { background: #f3ebf1; color: #875a7b; }
+.o_fcal_cell.o_today { border: 1px solid #c9b3d6; }
+.o_fcal_cell.o_sel { background: #875a7b; color: #fff; font-weight: 700; }
+
+.o_fcal_foot {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #f0ebf3;
+}
+
+.o_fcal_link {
+    border: none;
+    background: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #875a7b;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.o_fcal_link:hover { background: #f3ebf1; }
+.o_fcal_link.o_clear { color: #e74c3c; }
+
+/* ── Operations detail report (single panel, register groups) ──────────── */
+.o_fin_ops_table td, .o_fin_ops_table th { vertical-align: middle; }
+
+.o_fin_ops_group td {
+    background: #f3ebf1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #4a2f44;
+    border-top: 2px solid #e6e0ec;
+    padding: 8px 10px;
+}
+
+.o_fin_ops_group td b { color: #2b2b48; }
+
+.o_fin_ops_running { font-weight: 700; color: #2b2b48; }
+
+/* ── Customer financials report (grouped table, like operations) ──────── */
+.o_fin_cust_group { cursor: pointer; }
+.o_fin_cust_group:hover td { filter: brightness(0.98); }
+
+.o_fin_cust_tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 8px;
+    border-radius: 9px;
+    margin-left: 8px;
+    text-transform: uppercase;
+}
+.o_tag_student { background: #ede3f1; color: #6b3f87; }
+.o_tag_applicant { background: #fdebd0; color: #b9770e; }
+
+.o_debt { color: #c0392b; font-weight: 600; }
+.o_clear_amt { color: #15824a; }
+
+.o_ctype_charge { background: #fbe4e0; color: #c0392b; }
+.o_ctype_cash_in { background: #d6f3e2; color: #15824a; }
+.o_ctype_cash_out { background: #fde9d6; color: #b9770e; }
+
+/* ── Flows ────────────────────────────────────────────── */
+.o_fin_flows { display: flex; gap: 12px; }
+
+.o_fin_flow { flex: 1; border-radius: 8px; padding: 12px; position: relative; }
+.o_fin_in { background: #e8f7ef; }
+.o_fin_out { background: #fdeeec; }
+
+.o_fin_flow_label { font-size: 0.78rem; color: #666; margin-bottom: 4px; }
+.o_fin_flow_amt { font-size: 1.12rem; font-weight: 700; color: #2b2b48; }
+.o_fin_in .o_fin_flow_amt { color: #1e9e5a; }
+.o_fin_out .o_fin_flow_amt { color: #e74c3c; }
+
+.o_fin_pct {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 10px;
+    cursor: help;
+}
+
+.o_fin_pct_up { background: #d6f3e2; color: #15824a; }
+.o_fin_pct_down { background: #fad9d4; color: #c0392b; }
+.o_fin_pct_flat { background: #e7e9ef; color: #666; }
+
+/* ── Responsive: tablet ───────────────────────────────── */
+@media (max-width: 992px) {
+    .o_fin_midrow { flex-direction: column; }
+    .o_fin_kassa_panel,
+    .o_fin_cat_panel { flex: 1 1 auto; min-width: 0; }
+    .o_fin_kassa_scroll .o_fin_card { width: 100%; }
+}
+
+/* ── Responsive: phone ────────────────────────────────── */
+@media (max-width: 768px) {
+    /* The dashboard root becomes the single scroll container. The Odoo
+       mobile-app webview does NOT scroll the page body itself, so without this
+       you can only see down to the Cash Registers panel and can't reach the
+       rest below the fold. */
+    .o_finance_dashboard {
+        padding: 12px;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o_fin_header { flex-direction: column; align-items: stretch; gap: 10px; }
+    .o_fin_header_right { justify-content: space-between; }
+
+    /* two KPIs per row instead of one tall column */
+    .o_fin_kpis { gap: 10px; }
+    .o_kpi { min-width: 0; flex: 1 1 45%; }
+
+    /* keep each panel's own internal scroll at a reliable px height (vh
+       collapses inside the mobile webview); the root scrolls between panels */
+    .o_fin_scroll { height: 360px; }
+
+    /* register cards stack full-width */
+    .o_fin_kassa_scroll { flex-direction: column; flex-wrap: nowrap; }
+    .o_fin_kassa_scroll .o_fin_card { width: 100%; }
+
+    /* register in/out flow boxes stack */
+    .o_fin_flows { flex-direction: column; }
+
+    /* recent transactions: horizontal scroll so columns aren't squashed */
+    .o_fin_recent { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .o_fin_table { min-width: 560px; }
+}

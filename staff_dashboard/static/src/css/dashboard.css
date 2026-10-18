@@ -1,0 +1,792 @@
+.o_staff_dashboard {
+    padding: 24px;
+    background: #f5f6fa;
+    min-height: 100%;
+}
+
+.o_dashboard_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.o_dashboard_title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.o_dashboard_panels {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 140px);
+}
+
+.o_dashboard_panel {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.o_panel_heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #555;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+}
+
+.o_panel_actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Notes & Comments filter paneli */
+.o_comment_filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 14px 16px;
+    background: linear-gradient(180deg, #faf8fc 0%, #f4f6f9 100%);
+    border-bottom: 1px solid #e8eaf0;
+    animation: o_filters_slide 0.18s ease-out;
+}
+
+@keyframes o_filters_slide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.o_filter_field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 140px;
+}
+
+.o_filter_field_wide {
+    flex: 1 1 200px;
+}
+
+.o_filter_label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #8a8f99;
+    margin: 0;
+}
+
+.o_filter_label .fa {
+    color: #a78bb5;
+}
+
+.o_filter_input {
+    width: 100%;
+    height: 34px;
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    color: #333;
+    background: #fff;
+    border: 1px solid #dfe3ea;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_filter_input:hover {
+    border-color: #c9b3d6;
+}
+
+.o_filter_input:focus {
+    border-color: #875a7b;
+    box-shadow: 0 0 0 3px rgba(135, 90, 123, 0.14);
+}
+
+select.o_filter_input {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23999' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 26px;
+}
+
+.o_filter_clear {
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #e74c3c;
+    background: #fff;
+    border: 1px solid #f3c6c0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.o_filter_clear:hover {
+    background: #e74c3c;
+    color: #fff;
+    border-color: #e74c3c;
+}
+
+/* ── Özəl dropdown (FilterSelect / FilterDate) ───────────────────────────── */
+.o_fsel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 150px;
+}
+
+.o_fsel_trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    height: 34px;
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    color: #333;
+    background: #fff;
+    border: 1px solid #dfe3ea;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_fsel_trigger:hover {
+    border-color: #c9b3d6;
+}
+
+.o_fsel_trigger.o_open {
+    border-color: #875a7b;
+    box-shadow: 0 0 0 3px rgba(135, 90, 123, 0.14);
+}
+
+.o_fsel_value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.o_fsel_placeholder {
+    color: #9aa0a8;
+}
+
+.o_fsel_caret {
+    color: #9aa0a8;
+    font-size: 0.85rem;
+    transition: transform 0.18s ease;
+}
+
+.o_fsel_trigger.o_open .o_fsel_caret {
+    transform: rotate(180deg);
+}
+
+.o_fsel_menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #e6e0ec;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(60, 40, 70, 0.18);
+    animation: o_filters_slide 0.14s ease-out;
+}
+
+.o_fsel_opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 0.83rem;
+    color: #444;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.o_fsel_opt:hover {
+    background: #f3ebf1;
+    color: #875a7b;
+}
+
+.o_fsel_opt.o_active {
+    background: #875a7b;
+    color: #fff;
+    font-weight: 600;
+}
+
+.o_fsel_opt_check {
+    font-size: 0.78rem;
+}
+
+/* ── Multi-select (FilterMultiSelect) ────────────────────────────────────── */
+.o_fmulti_count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: auto;
+    padding: 0 5px;
+    background: #875a7b;
+    color: #fff;
+    border-radius: 9px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.o_fmulti_clear {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #e74c3c;
+    border-radius: 7px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0ebf3;
+}
+
+.o_fmulti_clear:hover {
+    background: #fdecea;
+}
+
+/* Custom scrollbar (menyu) */
+.o_fsel_menu::-webkit-scrollbar {
+    width: 8px;
+}
+.o_fsel_menu::-webkit-scrollbar-thumb {
+    background: #d8cbe1;
+    border-radius: 8px;
+}
+
+/* ── Özəl təqvim (FilterDate) ────────────────────────────────────────────── */
+.o_fcal {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 40;
+    width: 248px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #e6e0ec;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(60, 40, 70, 0.18);
+    animation: o_filters_slide 0.14s ease-out;
+}
+
+.o_fcal_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.o_fcal_title {
+    font-weight: 700;
+    font-size: 0.86rem;
+    color: #4a2f44;
+}
+
+.o_fcal_nav {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    background: #f3ebf1;
+    color: #875a7b;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.o_fcal_nav:hover {
+    background: #875a7b;
+    color: #fff;
+}
+
+.o_fcal_dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 4px;
+}
+
+.o_fcal_dow span {
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #b3a7bd;
+    padding: 2px 0;
+}
+
+.o_fcal_grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.o_fcal_cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    font-size: 0.8rem;
+    color: #444;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.o_fcal_cell.o_empty {
+    cursor: default;
+}
+
+.o_fcal_cell:not(.o_empty):hover {
+    background: #f3ebf1;
+    color: #875a7b;
+}
+
+.o_fcal_cell.o_today {
+    border: 1px solid #c9b3d6;
+}
+
+.o_fcal_cell.o_sel {
+    background: #875a7b;
+    color: #fff;
+    font-weight: 700;
+}
+
+.o_fcal_foot {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #f0ebf3;
+}
+
+.o_fcal_link {
+    border: none;
+    background: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #875a7b;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.o_fcal_link:hover {
+    background: #f3ebf1;
+}
+
+.o_fcal_link.o_clear {
+    color: #e74c3c;
+}
+
+.o_panel_scroll {
+    overflow-y: auto;
+    flex: 1;
+    padding: 12px 14px;
+}
+
+/* User Activity — istifadəçi axtarış sətri */
+.o_activity_search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #eef0f5;
+    color: #9aa0a8;
+    background: #fafafa;
+}
+
+.o_activity_search .o_filter_input {
+    flex: 1;
+}
+
+.o_activity_search_clear {
+    border: none;
+    background: none;
+    color: #b0b0b0;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.o_activity_search_clear:hover {
+    background: #f0eef3;
+    color: #e74c3c;
+}
+
+.o_panel_loading,
+.o_panel_empty {
+    padding: 24px;
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+}
+
+/* ── Comment Cards ────────────────────────────── */
+.o_comment_card {
+    border: 1px solid #e3e8ef;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ccc;
+    cursor: pointer;
+    transition: box-shadow 0.18s ease, background 0.18s ease, transform 0.18s ease, border-left-width 0.18s ease;
+}
+
+.o_comment_card:hover {
+    background: #faf8fc;
+    box-shadow: 0 4px 14px rgba(135, 90, 123, 0.15);
+    transform: translateY(-2px);
+    border-left-width: 6px;
+}
+
+.o_comment_card.is-student {
+    border-left-color: #875a7b;
+}
+
+.o_comment_card.is-teacher {
+    border-left-color: #00a09d;
+}
+
+.o_comment_card.is-contact {
+    border-left-color: #3498db;
+}
+
+.o_comment_card.is-trial {
+    border-left-color: #e67e22;
+}
+
+/* Row 1: Müəllim + Tarix */
+.o_card_row_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.o_card_teacher {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 700;
+    font-size: 0.93rem;
+    color: #222;
+}
+
+.o_teacher_avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #875a7b;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.is-teacher .o_teacher_avatar {
+    background: #00a09d;
+}
+
+.is-contact .o_teacher_avatar {
+    background: #3498db;
+}
+
+.is-trial .o_teacher_avatar {
+    background: #e67e22;
+}
+
+.o_card_date {
+    font-size: 0.78rem;
+    color: #bbb;
+}
+
+/* Row 2: Tip nişanı + Başlıq */
+.o_card_row_lesson {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.o_card_title {
+    color: #666;
+}
+
+.o_type_badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 0.70rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.o_type_badge.type-student { background: #875a7b; }
+.o_type_badge.type-teacher { background: #00a09d; }
+.o_type_badge.type-contact { background: #3498db; }
+.o_type_badge.type-trial   { background: #e67e22; }
+
+.o_type_badge .fa {
+    color: #fff;
+}
+
+/* Row 3: Müəllim / Tələbə / Kontakt — bariz pill-lər */
+.o_card_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.o_meta_tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 9px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+.o_meta_teacher {
+    color: #007c7a;
+    background: #e3f6f5;
+    border-color: #a9e3e1;
+}
+
+.o_meta_student {
+    color: #6f4564;
+    background: #f3ebf1;
+    border-color: #d8bcd0;
+}
+
+.o_meta_contact {
+    color: #2470a3;
+    background: #e8f2fb;
+    border-color: #b6d6ef;
+}
+
+/* Ayırıcı */
+.o_card_divider {
+    border-top: 1px solid #f0f0f0;
+    margin: 8px 0;
+}
+
+/* Mətn - solğun */
+.o_comment_text {
+    font-size: 0.88rem;
+    color: #888;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+/* ── Activity Table ───────────────────────────── */
+.o_activity_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.o_activity_table thead tr {
+    background: #f5f6fa;
+}
+
+.o_activity_table th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #777;
+    border-bottom: 2px solid #eee;
+    font-size: 0.80rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.o_activity_table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    vertical-align: middle;
+}
+
+.o_activity_table tbody tr:hover {
+    background: #fafafa;
+}
+
+/* Qrup sətri */
+.o_activity_group_row {
+    cursor: pointer;
+}
+
+.o_activity_group_row:hover {
+    background: #f3eef7 !important;
+}
+
+.o_row_arrow {
+    font-size: 0.72rem;
+    color: #aaa;
+    margin-right: 8px;
+    width: 10px;
+    display: inline-block;
+}
+
+.o_activity_date {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* Detay sətirlər */
+.o_activity_detail_row td {
+    background: #faf7fc;
+    border-bottom: 1px solid #f5f0f8 !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.o_detail_indent {
+    padding-left: 42px !important;
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.o_detail_icon {
+    color: #c0a0d0;
+}
+
+.o_duration_sm {
+    background: #f5f0f8;
+    color: #a070b0;
+    font-size: 0.75rem;
+    padding: 1px 7px;
+}
+
+.o_activity_avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #875a7b;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-right: 7px;
+}
+
+.o_duration_badge {
+    background: #f0eaf5;
+    color: #875a7b;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.80rem;
+    font-weight: 600;
+}
+
+.o_module_cell {
+    color: #999;
+    font-size: 0.82rem;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Responsive: tablet ───────────────────────────────── */
+@media (max-width: 992px) {
+    /* filter controls take more room before wrapping */
+    .o_filter_field,
+    .o_fsel { min-width: 130px; }
+}
+
+/* ── Responsive: phone ────────────────────────────────── */
+@media (max-width: 768px) {
+    /* The dashboard root becomes the single scroll container. The Odoo
+       mobile-app webview does NOT scroll the page body itself, so without this
+       the User Activity panel below the fold is unreachable. */
+    .o_staff_dashboard {
+        padding: 12px;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o_dashboard_header { flex-direction: column; align-items: stretch; gap: 10px; }
+
+    /* One page scroll: panels stack and grow to their full content height
+       (no inner fixed-height scroll boxes — those trap the scroll on touch). */
+    .o_dashboard_panels {
+        flex-direction: column;
+        height: auto;
+        gap: 14px;
+    }
+    .o_dashboard_panel { height: auto; }
+    /* keep each panel's own internal scroll, just with a reliable px height
+       (vh collapses inside the mobile webview) */
+    .o_panel_scroll {
+        flex: none;
+        height: 420px;
+    }
+
+    /* filter controls become full-width, one per row */
+    .o_comment_filters { gap: 8px; padding: 12px; }
+    .o_filter_field,
+    .o_filter_field_wide,
+    .o_fsel { min-width: 0; width: 100%; flex: 1 1 100%; }
+
+    /* custom dropdown / calendar popups never overflow the screen */
+    .o_fsel_menu { left: 0; right: 0; }
+    .o_fcal { width: 100%; max-width: 280px; }
+
+    .o_module_cell { max-width: 90px; }
+}

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="staff_dashboard.Dashboard">
+    <div class="o_staff_dashboard">
+
+      <!-- Header -->
+      <div class="o_dashboard_header">
+        <h4 class="o_dashboard_title">Staff Dashboard</h4>
+        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.refresh()">
+          <i class="fa fa-refresh me-1"/> Refresh
+        </button>
+      </div>
+
+      <div class="o_dashboard_panels">
+
+        <!-- ── Panel 1: Notes & Comments ──────────────────────────────── -->
+        <div class="o_dashboard_panel">
+          <div class="o_panel_heading">
+            <span><i class="fa fa-comments me-2"/>Notes &amp; Comments</span>
+            <button t-attf-class="btn btn-sm {{ state.showFilters ? 'btn-secondary' : 'btn-outline-secondary' }}"
+                    t-on-click="() => this.toggleFilters()">
+              <i class="fa fa-filter me-1"/> Filter
+            </button>
+          </div>
+
+          <!-- Filter paneli -->
+          <div t-if="state.showFilters" class="o_comment_filters">
+
+            <div class="o_filter_field o_filter_field_wide">
+              <label class="o_filter_label"><i class="fa fa-search"/> Search</label>
+              <input type="text" class="o_filter_input"
+                     placeholder="Type in comment…"
+                     t-att-value="state.filters.text"
+                     t-on-change="(ev) => this.setFilter('text', ev.target.value)"/>
+            </div>
+
+            <FilterMultiSelect label="'Author'" icon="'fa-pencil'" placeholder="'All authors'"
+                          values="state.filters.author" options="authorOptions"
+                          onToggle="(v) => this.toggleFilter('author', v)"
+                          onClear="() => this.clearFilter('author')"/>
+
+            <FilterMultiSelect label="'Teacher'" icon="'fa-user-md'" placeholder="'All teachers'"
+                          values="state.filters.teacher_id" options="teacherOptions"
+                          onToggle="(v) => this.toggleFilter('teacher_id', v)"
+                          onClear="() => this.clearFilter('teacher_id')"/>
+
+            <FilterMultiSelect label="'Student'" icon="'fa-graduation-cap'" placeholder="'All students'"
+                          values="state.filters.student_id" options="studentOptions"
+                          onToggle="(v) => this.toggleFilter('student_id', v)"
+                          onClear="() => this.clearFilter('student_id')"/>
+
+            <FilterMultiSelect label="'Group'" icon="'fa-users'" placeholder="'All groups'"
+                          values="state.filters.group_id" options="groupOptions"
+                          onToggle="(v) => this.toggleFilter('group_id', v)"
+                          onClear="() => this.clearFilter('group_id')"/>
+
+            <FilterMultiSelect label="'Module'" icon="'fa-cube'" placeholder="'All modules'"
+                          values="state.filters.source" options="sourceOptions"
+                          onToggle="(v) => this.toggleFilter('source', v)"
+                          onClear="() => this.clearFilter('source')"/>
+
+            <FilterSelect label="'Date'" icon="'fa-calendar'"
+                          value="state.filters.date_mode" options="dateModeOptions"
+                          onSelect="(v) => this.applyFilter('date_mode', v)"/>
+
+            <t t-if="state.filters.date_mode === 'between'">
+              <FilterDate label="'From'" value="state.filters.date_from"
+                          onSelect="(v) => this.applyFilter('date_from', v)"/>
+              <FilterDate label="'To'" value="state.filters.date_to"
+                          onSelect="(v) => this.applyFilter('date_to', v)"/>
+            </t>
+            <t t-if="state.filters.date_mode === 'day'">
+              <FilterDate label="'Day'" value="state.filters.date_one"
+                          onSelect="(v) => this.applyFilter('date_one', v)"/>
+            </t>
+
+            <button class="o_filter_clear" t-on-click="() => this.clearFilters()">
+              <i class="fa fa-eraser me-1"/> Clear
+            </button>
+          </div>
+
+          <div t-if="state.loadingComments" class="o_panel_loading">
+            <i class="fa fa-spinner fa-spin"/> Loading...
+          </div>
+
+          <div t-elif="state.comments.length === 0" class="o_panel_empty">
+            No comments found.
+          </div>
+
+          <div class="o_panel_scroll" t-else="">
+            <div t-foreach="state.comments" t-as="c" t-key="c_index"
+                 t-attf-class="o_comment_card is-{{ c.type }}"
+                 t-on-click="() => this.openRecord(c.res_model, c.res_id)">
+
+              <!-- Row 1: Yazan + Tarix -->
+              <div class="o_card_row_top">
+                <span class="o_card_teacher">
+                  <span class="o_teacher_avatar">
+                    <t t-esc="c.author_name ? c.author_name[0] : '?'"/>
+                  </span>
+                  <t t-esc="c.author_name"/>
+                </span>
+                <span class="o_card_date"><t t-esc="c.date"/></span>
+              </div>
+
+              <!-- Row 2: Tip nişanı (mənbə + tip bir badge-də) + Başlıq -->
+              <div class="o_card_row_lesson">
+                <span t-attf-class="o_type_badge type-{{ c.type }}">
+                  <i t-attf-class="fa {{ c.icon }} me-1"/><t t-esc="c.type_label"/>
+                </span>
+                <span class="o_card_title"><t t-esc="c.title"/></span>
+              </div>
+
+              <!-- Row 3: Müəllim / Tələbə / Kontakt — bariz pill-lər -->
+              <div t-if="c.teacher_name or c.student_name or c.contact_name" class="o_card_meta">
+                <span t-if="c.teacher_name" class="o_meta_tag o_meta_teacher">
+                  <i class="fa fa-user-md me-1"/>Teacher: <t t-esc="c.teacher_name"/>
+                </span>
+                <span t-if="c.student_name" class="o_meta_tag o_meta_student">
+                  <i class="fa fa-graduation-cap me-1"/>Student: <t t-esc="c.student_name"/>
+                </span>
+                <span t-if="c.contact_name" class="o_meta_tag o_meta_contact">
+                  <i class="fa fa-address-book-o me-1"/><t t-esc="c.contact_name"/>
+                </span>
+              </div>
+
+              <!-- Ayırıcı + Mətn -->
+              <div class="o_card_divider"/>
+              <div class="o_comment_text"><t t-esc="c.comment"/></div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Panel 2: User Activity ─────────────────────────────────── -->
+        <div class="o_dashboard_panel">
+          <div class="o_panel_heading">
+            <span><i class="fa fa-clock-o me-2"/>User Activity</span>
+            <div class="o_panel_actions">
+              <button t-attf-class="btn btn-sm {{ state.latestOnly ? 'btn-secondary' : 'btn-outline-secondary' }}"
+                      t-on-click="() => this.toggleLatestOnly()"
+                      title="Hər istifadəçinin yalnız sonuncu günü">
+                <i class="fa fa-filter me-1"/> Latest only
+              </button>
+              <button class="btn btn-sm btn-outline-danger o_clear_activity_btn"
+                      t-on-click="() => this.clearActivity()">
+                <i class="fa fa-trash me-1"/> Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- İstifadəçi adına görə axtarış -->
+          <div class="o_activity_search">
+            <i class="fa fa-search"/>
+            <input type="text" class="o_filter_input" placeholder="Search user…"
+                   t-att-value="state.activitySearch"
+                   t-on-input="(ev) => this.setActivitySearch(ev.target.value)"/>
+            <button t-if="state.activitySearch" class="o_activity_search_clear"
+                    t-on-click="() => this.setActivitySearch('')" title="Clear">
+              <i class="fa fa-times"/>
+            </button>
+          </div>
+
+          <div t-if="state.loadingActivity" class="o_panel_loading">
+            <i class="fa fa-spinner fa-spin"/> Loading...
+          </div>
+
+          <div t-elif="displayedActivity.length === 0" class="o_panel_empty">
+            No activity recorded.
+          </div>
+
+          <div class="o_panel_scroll" t-else="">
+            <table class="o_activity_table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="displayedActivity" t-as="grp" t-key="grp.key">
+
+                  <!-- Qrup sətri -->
+                  <tr class="o_activity_group_row" t-on-click="() => this.toggleRow(grp.key)">
+                    <td>
+                      <i t-attf-class="fa o_row_arrow {{ state.expanded[grp.key] ? 'fa-chevron-down' : 'fa-chevron-right' }}"/>
+                      <span class="o_activity_avatar"><t t-esc="grp.user_name[0]"/></span>
+                      <t t-esc="grp.user_name"/>
+                    </td>
+                    <td class="o_activity_date"><t t-esc="grp.date"/></td>
+                    <td><span class="o_duration_badge"><t t-esc="grp.total_duration"/></span></td>
+                  </tr>
+
+                  <!-- Detay sətirlər (expand olduqda) -->
+                  <t t-if="state.expanded[grp.key]">
+                    <tr t-foreach="grp.sessions" t-as="s" t-key="s_index" class="o_activity_detail_row">
+                      <td class="o_detail_indent">
+                        <i class="fa fa-sign-in o_detail_icon me-1"/>
+                        <t t-esc="s.login_time"/>
+                      </td>
+                      <td/>
+                      <td><span class="o_duration_badge o_duration_sm"><t t-esc="s.duration"/></span></td>
+                    </tr>
+                  </t>
+
+                </t>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </t>
+
+</templates>

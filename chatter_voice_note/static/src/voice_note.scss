@@ -1,0 +1,34 @@
+// Chatter Voice Note — mikrofon düyməsinin chatter-dəki görünüşü.
+// Core stil: mail/static/src/discuss/voice_message/common/voice_recorder.scss
+
+.o-mail-Composer .o-mail-VoiceRecorder {
+    color: #6c757d;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out;
+
+    &:hover:not(:disabled) {
+        color: #714b67; // Odoo primary
+    }
+
+    &:disabled {
+        opacity: .45;
+    }
+
+    // Yazma zamanı: qırmızı vurğu + yumşaq fon
+    &.o-recording {
+        color: #d9534f;
+        background-color: rgba(217, 83, 79, .12);
+        padding-inline: .35rem;
+        border-radius: .5rem;
+    }
+}
+
+// Chatter-də composer "extended" rejimdədir: düymə Log / Send düyməsi ilə eyni sırada durur.
+.o-mail-Composer.o-extended .o-mail-VoiceRecorder {
+    align-self: center;
+    padding-block: .25rem;
+    padding-inline: .35rem;
+
+    .o-mail-VoiceRecorder-elapsed {
+        font-size: .8125rem;
+    }
+}

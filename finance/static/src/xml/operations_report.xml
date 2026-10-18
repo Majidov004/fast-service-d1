@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="finance.OperationsReport">
+    <div class="o_finance_dashboard o_fin_ops">
+
+      <div class="o_fin_header">
+        <h2><i class="fa fa-list-alt me-2"/>Operations Detail</h2>
+        <div class="o_fin_header_right">
+          <FilterSelect icon="'fa-calendar'" value="state.period" options="periodOptions"
+                        onSelect="(v) => this.setPeriod(v)"/>
+          <t t-if="state.period === 'between'">
+            <FilterDate label="'From'" value="state.dateFrom"
+                        onSelect="(v) => this.setDate('from', v)"/>
+            <FilterDate label="'To'" value="state.dateTo"
+                        onSelect="(v) => this.setDate('to', v)"/>
+          </t>
+          <FilterSelect icon="'fa-archive'" value="state.registerId" options="registerFilterOptions"
+                        onSelect="(v) => this.setRegister(v)"/>
+          <FilterSelect icon="'fa-tags'" value="state.categoryId" options="categoryFilterOptions"
+                        onSelect="(v) => this.setCategory(v)"/>
+        </div>
+      </div>
+
+      <div t-if="state.loading" class="o_fin_loading">
+        <i class="fa fa-spinner fa-spin"/> Loading...
+      </div>
+
+      <t t-else="">
+        <div t-if="state.registers.length === 0" class="o_fin_muted">
+          No cash registers.
+        </div>
+
+        <div t-else="" class="o_fin_panel">
+          <table class="o_fin_table o_fin_ops_table">
+            <thead>
+              <tr>
+                <th>Date</th><th>Document</th><th>Category</th><th>Detail</th><th>Currency</th>
+                <th class="o_right">In</th><th class="o_right">Out</th><th class="o_right">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="state.registers" t-as="reg" t-key="reg.register_id">
+                <tr class="o_fin_ops_group">
+                  <td colspan="4">
+                    <i class="fa fa-archive me-1"/><t t-esc="reg.register_name"/>
+                  </td>
+                  <td colspan="4" class="o_right">
+                    Opening: <b><t t-esc="reg.opening_fmt"/></b> ·
+                    Closing: <b><t t-esc="reg.closing_fmt"/></b>
+                  </td>
+                </tr>
+                <tr t-if="!reg.has_data">
+                  <td colspan="8" class="o_fin_muted o_fin_sm">No operations in this period.</td>
+                </tr>
+                <tr t-foreach="reg.rows" t-as="row" t-key="reg.register_id + '_' + row_index"
+                    class="o_fin_row" t-on-click="() => this.openRecord(row.res_model, row.res_id)">
+                  <td><t t-esc="row.date"/></td>
+                  <td><t t-esc="row.name"/></td>
+                  <td><t t-esc="row.category"/></td>
+                  <td><t t-esc="row.detail"/></td>
+                  <td><t t-esc="row.doc_currency"/></td>
+                  <td class="o_right o_in"><t t-esc="row.in_fmt"/></td>
+                  <td class="o_right o_out"><t t-esc="row.out_fmt"/></td>
+                  <td class="o_right o_fin_ops_running"><t t-esc="row.balance_fmt"/></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+
+    </div>
+  </t>
+
+</templates>

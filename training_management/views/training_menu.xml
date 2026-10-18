@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_training_root"
+              name="Training"
+              sequence="10"
+              web_icon="training_management,static/description/icon.png"/>
+
+    <!-- Training Groups Menu -->
+    <menuitem id="menu_training_groups"
+              name="Training Groups"
+              parent="menu_training_root"
+              action="action_training_group"
+              sequence="10"/>
+</odoo>

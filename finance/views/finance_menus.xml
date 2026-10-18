@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root app menu -->
+    <menuitem id="menu_finance_root" name="Finance" sequence="20"/>
+
+    <!-- Dashboard (first screen) -->
+    <menuitem id="menu_finance_dashboard"
+              name="Dashboard"
+              parent="menu_finance_root"
+              action="action_finance_dashboard"
+              groups="finance.group_finance_user,base.group_system"
+              sequence="1"/>
+
+    <!-- Reporting -->
+    <menuitem id="menu_finance_reporting"
+              name="Reporting"
+              parent="menu_finance_root"
+              groups="finance.group_finance_user,base.group_system"
+              sequence="5"/>
+    <menuitem id="menu_finance_operations_report"
+              name="Operations Detail"
+              parent="menu_finance_reporting"
+              action="action_finance_operations_report"
+              groups="finance.group_finance_user,base.group_system"
+              sequence="10"/>
+    <menuitem id="menu_finance_customer_report"
+              name="Customer Financials"
+              parent="menu_finance_reporting"
+              action="action_finance_customer_report"
+              groups="finance.group_finance_user,base.group_system"
+              sequence="20"/>
+
+    <!-- Operations -->
+    <menuitem id="menu_finance_operations"
+              name="Əməliyyat"
+              parent="menu_finance_root"
+              sequence="10"/>
+    <menuitem id="menu_finance_cash_in"
+              name="Cash In"
+              parent="menu_finance_operations"
+              action="action_finance_cash_in"
+              sequence="10"/>
+    <menuitem id="menu_finance_cash_out"
+              name="Cash Out"
+              parent="menu_finance_operations"
+              action="action_finance_cash_out"
+              sequence="20"/>
+    <menuitem id="menu_finance_transfer"
+              name="Transfer"
+              parent="menu_finance_operations"
+              action="action_finance_transfer"
+              sequence="30"/>
+    <menuitem id="menu_finance_student_charge"
+              name="Student Charges"
+              parent="menu_finance_operations"
+              action="action_finance_student_charge"
+              sequence="40"/>
+    <menuitem id="menu_finance_payment_promise"
+              name="Payment Promises"
+              parent="menu_finance_operations"
+              action="action_finance_payment_promise"
+              sequence="50"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_finance_config"
+              name="Configuration"
+              parent="menu_finance_root"
+              sequence="90"/>
+    <menuitem id="menu_finance_config_settings"
+              name="Settings"
+              parent="menu_finance_config"
+              action="action_finance_config_settings"
+              sequence="5"
+              groups="base.group_system"/>
+    <menuitem id="menu_finance_config_registers"
+              name="Cash Registers"
+              parent="menu_finance_config"
+              action="action_finance_cash_register"
+              sequence="10"/>
+    <menuitem id="menu_finance_config_categories"
+              name="Categories"
+              parent="menu_finance_config"
+              action="action_finance_category"
+              sequence="20"/>
+    <menuitem id="menu_finance_config_expenses"
+              name="Expense Items"
+              parent="menu_finance_config"
+              action="action_finance_expense"
+              sequence="30"/>
+    <menuitem id="menu_finance_config_payment_methods"
+              name="Payment Methods"
+              parent="menu_finance_config"
+              action="action_finance_payment_method"
+              sequence="40"/>
+
+    <!-- Currencies — simplified rate management (single Rate field).
+         Restricted to system admins (currency management is sensitive). -->
+    <menuitem id="menu_finance_config_currencies"
+              name="Currencies"
+              parent="menu_finance_config"
+              action="action_finance_currency"
+              sequence="50"
+              groups="base.group_system"/>
+
+</odoo>

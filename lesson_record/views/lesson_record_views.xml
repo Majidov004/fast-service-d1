@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_lesson_record_tree" model="ir.ui.view">
+        <field name="name">lesson.record.tree</field>
+        <field name="model">lesson.record</field>
+        <field name="arch" type="xml">
+            <list string="Lesson Records" decoration-info="is_extra">
+                <field name="is_extra" column_invisible="1"/>
+                <field name="name"/>
+                <field name="lesson_number"/>
+                <field name="sub_number" optional="hide"/>
+                <field name="group_id"/>
+                <field name="teacher_id"/>
+                <field name="lesson_date"/>
+                <field name="lesson_time_display"/>
+                <field name="present_count"/>
+                <field name="absent_count"/>
+                <field name="create_uid" string="Created By" optional="hide"/>
+                <field name="create_date" string="Created On" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'scheduled'"
+                       decoration-success="state == 'completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_lesson_record_form" model="ir.ui.view">
+        <field name="name">lesson.record.form</field>
+        <field name="model">lesson.record</field>
+        <field name="arch" type="xml">
+            <form string="Lesson Record">
+
+                <!-- Header düymələrinin invisible şərtləri üçün gizli fieldlər -->
+                <field name="source" invisible="1"/>
+                <field name="is_extra" invisible="1"/>
+
+                <header>
+                    <!-- COMPLETE LESSON: yalnız saxlanmış sənəddə və 'scheduled' vəziyyətdə -->
+                    <button name="action_complete_lesson"
+                            string="Complete Lesson"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="not id or state != 'scheduled'"/>
+
+                    <!-- DELETE EXTRA: yalnız əlavə (5.1) və hələ keçilməmiş dərslər -->
+                    <button name="action_delete_extra_lesson"
+                            string="Delete Extra Lesson"
+                            type="object"
+                            class="btn-danger"
+                            confirm="Delete this extra lesson? Following lessons will shift back by one slot."
+                            invisible="not is_extra or state != 'scheduled'"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="scheduled,completed"/>
+                </header>
+
+                <sheet>
+                    <widget name="web_ribbon" title="Extra"
+                            bg_color="text-bg-warning"
+                            invisible="not is_extra"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="group_id"/>
+                            <field name="teacher_id"/>
+                            <field name="lesson_number"/>
+                            <field name="sub_number" invisible="sub_number == 0"/>
+                            <field name="create_uid" string="Created By" readonly="1"/>
+                            <field name="create_date" string="Created On" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="lesson_date"/>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                            <field name="lesson_time_display"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group>
+                            <field name="student_count"/>
+                            <field name="present_count"/>
+                            <field name="absent_count"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Students Tab -->
+                        <page string="Students" name="students">
+                            <field name="student_line_ids" nolabel="1">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="student_id" readonly="1"/>
+                                    <field name="phone" readonly="1"/>
+                                    <field name="mobile" readonly="1"/>
+                                    <field name="attendance"
+                                           decoration-success="attendance == 'present'"
+                                           decoration-danger="attendance == 'absent'"/>
+                                    <field name="comment"/>
+                                    <field name="homework_count" string="HW Files" readonly="1"/>
+                                    <button name="action_open_homework_wizard"
+                                            type="object"
+                                            icon="fa-folder-open"
+                                            string="Homework"
+                                            title="Open Homework Files"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Teacher Comment Tab -->
+                        <page string="Teacher Comment" name="teacher_comment">
+                            <group>
+                                <field name="teacher_comment" nolabel="1"
+                                       placeholder="Add your comments about this lesson..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_lesson_record_search" model="ir.ui.view">
+        <field name="name">lesson.record.search</field>
+        <field name="model">lesson.record</field>
+        <field name="arch" type="xml">
+            <search string="Search Lesson Records">
+                <field name="name"/>
+                <field name="group_id"/>
+                <field name="teacher_id"/>
+                <field name="lesson_date"/>
+                <filter string="Scheduled" name="filter_scheduled"
+                        domain="[('state', '=', 'scheduled')]"/>
+                <filter string="Completed" name="filter_completed"
+                        domain="[('state', '=', 'completed')]"/>
+                <filter string="Today" name="filter_today"
+                        domain="[('lesson_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Group" name="group_by_group"
+                            context="{'group_by': 'group_id'}"/>
+                    <filter string="Teacher" name="group_by_teacher"
+                            context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Date" name="group_by_date"
+                            context="{'group_by': 'lesson_date'}"/>
+                    <filter string="Status" name="group_by_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_lesson_record" model="ir.actions.act_window">
+        <field name="name">Lesson Records</field>
+        <field name="res_model">lesson.record</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_lesson_record_search"/>
+        <field name="context">{'search_default_filter_scheduled': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No lesson records yet
+            </p>
+            <p>
+                Lesson records will be created automatically when you start a training group.
+            </p>
+        </field>
+    </record>
+</odoo>

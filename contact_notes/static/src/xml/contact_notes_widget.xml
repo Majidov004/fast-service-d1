@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="contact_notes.NotesWidget">
+    <div class="o_contact_notes_wrapper">
+
+      <div class="o_notes_toolbar">
+        <button class="btn btn-primary btn-sm" t-on-click="() => this.addNote()">
+          + Add Note
+        </button>
+      </div>
+
+      <div class="o_contact_notes">
+
+        <div t-if="state.notes.length === 0" class="o_notes_empty">
+          No notes yet.
+        </div>
+
+        <div t-foreach="state.notes" t-as="note" t-key="note.id" class="o_note_card">
+          <div class="o_note_header">
+            <div class="o_note_meta">
+              <span class="o_note_author">
+                <i class="fa fa-user-circle me-1"/>
+                <t t-esc="note.employee_id ? note.employee_id[1] : 'Unknown'"/>
+              </span>
+              <span class="o_note_date">
+                <i class="fa fa-clock-o me-1"/>
+                <t t-esc="this.formatDate(note.date)"/>
+              </span>
+            </div>
+            <div class="o_note_actions">
+              <button t-on-click="() => this.editNote(note)" title="Edit">
+                <i class="fa fa-pencil"/>
+              </button>
+              <button class="delete" t-on-click="() => this.deleteNote(note.id)" title="Delete">
+                <i class="fa fa-trash"/>
+              </button>
+            </div>
+          </div>
+          <div class="o_note_body">
+            <t t-esc="note.text"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </t>
+
+</templates>

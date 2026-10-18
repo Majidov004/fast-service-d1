@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_partner_search_custom" model="ir.ui.view">
+      <field name="name">res.partner.search.custom</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_res_partner_filter"/>
+      <field name="arch" type="xml">
+        <search position="inside">
+          <field name="comment" string="Notes"/>
+        </search>
+      </field>
+    </record>
+
+  </data>
+</odoo>

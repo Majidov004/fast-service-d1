@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_trail_lesson,trail.lesson,model_trail_lesson,base.group_system,1,1,1,1
+access_trail_lesson_qa,trail.lesson.qa,model_trail_lesson_qa,base.group_system,1,1,1,1
+access_trail_lesson_complete_wizard,trail.lesson.complete.wizard,model_trail_lesson_complete_wizard,base.group_system,1,1,1,1
+access_trail_lesson_complete_wizard_qa,trail.lesson.complete.wizard.qa,model_trail_lesson_complete_wizard_qa,base.group_system,1,1,1,1
+access_trail_lesson_plan_wizard,trail.lesson.plan.wizard,model_trail_lesson_plan_wizard,base.group_system,1,1,1,1
+access_trail_config_company,trail.lesson.config.company,model_trail_lesson_config_company,base.group_system,1,1,1,1
+access_trail_config_position,trail.lesson.config.position,model_trail_lesson_config_position,base.group_system,1,1,1,1
+access_trail_config_course,trail.lesson.config.course,model_trail_lesson_config_course,base.group_system,1,1,1,1
+access_trail_config_school,trail.lesson.config.school,model_trail_lesson_config_school,base.group_system,1,1,1,1
+access_trail_config_learning_purpose,trail.lesson.config.learning.purpose,model_trail_lesson_config_learning_purpose,base.group_system,1,1,1,1
+access_trail_lesson_question,trail.lesson.question,model_trail_lesson_question,base.group_system,1,1,1,1

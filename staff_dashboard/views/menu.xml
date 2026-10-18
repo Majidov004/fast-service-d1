@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <menuitem id="menu_staff_dashboard_root"
+              name="Staff Dashboard"
+              sequence="2"
+              groups="staff_dashboard.group_dashboard_user,base.group_system"
+              web_icon="staff_dashboard,static/description/icon.png"/>
+
+    <menuitem id="menu_staff_dashboard"
+              name="Dashboard"
+              parent="menu_staff_dashboard_root"
+              action="action_staff_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_staff_analytics"
+              name="Analytics"
+              parent="menu_staff_dashboard_root"
+              action="action_staff_analytics"
+              sequence="2"/>
+  </data>
+</odoo>

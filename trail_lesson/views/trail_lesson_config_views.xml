@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         COMPANY
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_trail_config_company_list" model="ir.ui.view">
+        <field name="name">trail.lesson.config.company.list</field>
+        <field name="model">trail.lesson.config.company</field>
+        <field name="arch" type="xml">
+            <list string="Companies" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trail_config_company_form" model="ir.ui.view">
+        <field name="name">trail.lesson.config.company.form</field>
+        <field name="model">trail.lesson.config.company</field>
+        <field name="arch" type="xml">
+            <form string="Company">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trail_config_company" model="ir.actions.act_window">
+        <field name="name">Companies</field>
+        <field name="res_model">trail.lesson.config.company</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         POSITION / TITLE
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_trail_config_position_list" model="ir.ui.view">
+        <field name="name">trail.lesson.config.position.list</field>
+        <field name="model">trail.lesson.config.position</field>
+        <field name="arch" type="xml">
+            <list string="Positions / Titles" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trail_config_position_form" model="ir.ui.view">
+        <field name="name">trail.lesson.config.position.form</field>
+        <field name="model">trail.lesson.config.position</field>
+        <field name="arch" type="xml">
+            <form string="Position / Title">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trail_config_position" model="ir.actions.act_window">
+        <field name="name">Positions / Titles</field>
+        <field name="res_model">trail.lesson.config.position</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         COURSE
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_trail_config_course_list" model="ir.ui.view">
+        <field name="name">trail.lesson.config.course.list</field>
+        <field name="model">trail.lesson.config.course</field>
+        <field name="arch" type="xml">
+            <list string="Courses" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trail_config_course_form" model="ir.ui.view">
+        <field name="name">trail.lesson.config.course.form</field>
+        <field name="model">trail.lesson.config.course</field>
+        <field name="arch" type="xml">
+            <form string="Course">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trail_config_course" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">trail.lesson.config.course</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         SCHOOL
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_trail_config_school_list" model="ir.ui.view">
+        <field name="name">trail.lesson.config.school.list</field>
+        <field name="model">trail.lesson.config.school</field>
+        <field name="arch" type="xml">
+            <list string="Schools" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trail_config_school_form" model="ir.ui.view">
+        <field name="name">trail.lesson.config.school.form</field>
+        <field name="model">trail.lesson.config.school</field>
+        <field name="arch" type="xml">
+            <form string="School">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trail_config_school" model="ir.actions.act_window">
+        <field name="name">Schools</field>
+        <field name="res_model">trail.lesson.config.school</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         LEARNING PURPOSE
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_trail_config_learning_purpose_list" model="ir.ui.view">
+        <field name="name">trail.lesson.config.learning.purpose.list</field>
+        <field name="model">trail.lesson.config.learning.purpose</field>
+        <field name="arch" type="xml">
+            <list string="Learning Purposes" editable="bottom">
+                <field name="name"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trail_config_learning_purpose_form" model="ir.ui.view">
+        <field name="name">trail.lesson.config.learning.purpose.form</field>
+        <field name="model">trail.lesson.config.learning.purpose</field>
+        <field name="arch" type="xml">
+            <form string="Learning Purpose">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trail_config_learning_purpose" model="ir.actions.act_window">
+        <field name="name">Learning Purposes</field>
+        <field name="res_model">trail.lesson.config.learning.purpose</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

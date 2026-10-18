@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- ── List View ─────────────────────────────────────────────────────── -->
+    <record id="view_waiting_student_list" model="ir.ui.view">
+      <field name="name">res.partner.waiting.student.list</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <list string="Waiting Students"
+              decoration-warning="training_group_count == 0"
+              decoration-success="training_group_count &gt; 0">
+          <field name="name"                 string="Full Name"/>
+          <field name="phone"                string="Phone"/>
+          <field name="mobile"               string="Mobile"/>
+          <field name="manager_id"           string="Registrar"/>
+          <field name="tl_system_choice"     string="Sold Program"/>
+          <field name="tl_payment_amount"    string="Paid" sum="Paid"/>
+          <field name="expected_join_date"   string="Expected Start"/>
+          <field name="training_group_count" string="Groups"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- ── Search View ───────────────────────────────────────────────────── -->
+    <record id="view_waiting_student_search" model="ir.ui.view">
+      <field name="name">res.partner.waiting.student.search</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <search string="Search Waiting Students">
+          <field name="name"       string="Name"/>
+          <field name="phone"      string="Phone"/>
+          <field name="manager_id" string="Manager"/>
+
+          <filter name="starting_soon" string="Starting This Week"
+                  domain="[('expected_join_date', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                           ('expected_join_date', '&lt;', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+          <filter name="overdue" string="Start Date Passed"
+                  domain="[('expected_join_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+          <separator/>
+          <group string="Group By">
+            <filter name="group_by_system" string="Sold Program"
+                    context="{'group_by': 'tl_system_choice'}"/>
+            <filter name="group_by_manager" string="Manager"
+                    context="{'group_by': 'manager_id'}"/>
+            <filter name="group_by_join_date" string="Expected Start"
+                    context="{'group_by': 'expected_join_date'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- ── Action ────────────────────────────────────────────────────────── -->
+    <record id="action_waiting_students" model="ir.actions.act_window">
+      <field name="name">Waiting Students</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">list,form</field>
+      <field name="domain">[('is_student', '=', True), ('is_waiting_student', '=', True)]</field>
+      <field name="context">{'default_is_student': True, 'default_is_waiting_student': True}</field>
+      <field name="search_view_id" ref="view_waiting_student_search"/>
+      <field name="view_ids" eval="[
+        (5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('view_waiting_student_list')}),
+      ]"/>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">No one is waiting right now</p>
+        <p>
+            Students who already paid during the trial lesson but start later
+            land here. They leave this list automatically as soon as they are
+            added to a training group.
+        </p>
+      </field>
+    </record>
+
+    <!-- ── Menu ──────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_waiting_students"
+              name="Waiting Students"
+              parent="contacts.menu_contacts"
+              action="action_waiting_students"
+              sequence="3"/>
+
+  </data>
+</odoo>

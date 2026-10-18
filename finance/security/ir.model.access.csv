@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_finance_cash_register_user,finance.cash.register.user,model_finance_cash_register,base.group_system,1,1,1,1
+access_finance_payment_method_user,finance.payment.method.user,model_finance_payment_method,base.group_system,1,1,1,1
+access_finance_expense_user,finance.expense.user,model_finance_expense,base.group_system,1,1,1,1
+access_finance_category_user,finance.category.user,model_finance_category,base.group_system,1,1,1,1
+access_finance_cash_move_user,finance.cash.move.user,model_finance_cash_move,base.group_system,1,1,1,1
+access_finance_transfer_user,finance.transfer.user,model_finance_transfer,base.group_system,1,1,1,1
+access_finance_student_charge_user,finance.student.charge.user,model_finance_student_charge,base.group_system,1,1,1,1
+access_finance_applicant_paid_wizard_user,finance.applicant.paid.wizard.user,model_finance_applicant_paid_wizard,base.group_system,1,1,1,1
+access_finance_payment_promise_user,finance.payment.promise.user,model_finance_payment_promise,base.group_system,1,1,1,1

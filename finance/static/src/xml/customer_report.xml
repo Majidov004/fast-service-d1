@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="finance.CustomerReport">
+    <div class="o_finance_dashboard o_fin_cust">
+
+      <div class="o_fin_header">
+        <h2><i class="fa fa-users me-2"/>Customer Financials</h2>
+        <div class="o_fin_header_right">
+          <FilterSelect icon="'fa-calendar'" value="state.period" options="periodOptions"
+                        onSelect="(v) => this.setPeriod(v)"/>
+          <t t-if="state.period === 'between'">
+            <FilterDate label="'From'" value="state.dateFrom"
+                        onSelect="(v) => this.setDate('from', v)"/>
+            <FilterDate label="'To'" value="state.dateTo"
+                        onSelect="(v) => this.setDate('to', v)"/>
+          </t>
+          <FilterSelect icon="'fa-user'" value="state.partnerId" options="partnerFilterOptions"
+                        searchable="true" onSelect="(v) => this.setPartner(v)"/>
+          <FilterSelect icon="'fa-tags'" value="state.moveType" options="typeFilterOptions"
+                        onSelect="(v) => this.setType(v)"/>
+          <button t-attf-class="btn btn-sm {{ state.hideEmpty ? 'btn-secondary' : 'btn-outline-secondary' }}"
+                  t-on-click="() => this.toggleHideEmpty()">
+            <i class="fa fa-filter me-1"/> With activity only
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.refresh()">
+            <i class="fa fa-refresh me-1"/> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div t-if="state.loading" class="o_fin_loading">
+        <i class="fa fa-spinner fa-spin"/> Loading...
+      </div>
+
+      <t t-else="">
+        <div t-if="visibleCustomers.length === 0" class="o_fin_muted">
+          No customer financial activity yet.
+        </div>
+
+        <div t-else="" class="o_fin_panel">
+          <table class="o_fin_table o_fin_ops_table">
+            <thead>
+              <tr>
+                <th>Date</th><th>Document</th><th>Type</th><th>Currency</th>
+                <th class="o_right">Opening Balance</th>
+                <th class="o_right">Charges</th>
+                <th class="o_right">Payments</th>
+                <th class="o_right">Refunds</th>
+                <th class="o_right">Closing Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="visibleCustomers" t-as="c" t-key="c.partner_id">
+                <tr class="o_fin_ops_group o_fin_cust_group"
+                    t-on-click="() => this.openPartner(c.partner_id)">
+                  <td colspan="4">
+                    <i class="fa fa-user-circle me-1"/><t t-esc="c.name"/>
+                    <span t-if="c.is_student" class="o_fin_cust_tag o_tag_student">Student</span>
+                    <span t-elif="c.is_applicant" class="o_fin_cust_tag o_tag_applicant">Applicant</span>
+                  </td>
+                  <td t-attf-class="o_right {{ c.opening > 0 ? 'o_debt' : 'o_clear_amt' }}">
+                    <t t-esc="c.opening_fmt"/>
+                  </td>
+                  <td class="o_right o_debt"><t t-esc="c.debt_fmt"/></td>
+                  <td class="o_right o_in"><t t-esc="c.in_fmt"/></td>
+                  <td class="o_right o_out"><t t-esc="c.out_fmt"/></td>
+                  <td t-attf-class="o_right {{ c.remaining > 0 ? 'o_debt' : 'o_clear_amt' }}">
+                    <t t-esc="c.remaining_fmt"/>
+                  </td>
+                </tr>
+                <tr t-if="c.rows.length === 0">
+                  <td colspan="9" class="o_fin_muted o_fin_sm">No documents in this period.</td>
+                </tr>
+                <tr t-foreach="c.rows" t-as="row" t-key="row.res_model + '_' + row.res_id"
+                    class="o_fin_row" t-on-click="() => this.openRecord(row.res_model, row.res_id)">
+                  <td><t t-esc="row.date"/></td>
+                  <td><t t-esc="row.name"/></td>
+                  <td>
+                    <span t-attf-class="o_fin_badge o_ctype_{{ row.type }}"><t t-esc="row.type_label"/></span>
+                  </td>
+                  <td><t t-esc="row.currency"/></td>
+                  <td/>
+                  <td class="o_right o_debt"><t t-esc="row.debt_fmt"/></td>
+                  <td class="o_right o_in"><t t-esc="row.in_fmt"/></td>
+                  <td class="o_right o_out"><t t-esc="row.out_fmt"/></td>
+                  <td/>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+
+    </div>
+  </t>
+
+</templates>

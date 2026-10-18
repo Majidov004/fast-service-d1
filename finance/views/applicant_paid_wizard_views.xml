@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_finance_applicant_paid_wizard_form" model="ir.ui.view">
+        <field name="name">finance.applicant.paid.wizard.form</field>
+        <field name="model">finance.applicant.paid.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Convert to Student">
+                <field name="partner_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="register_currency_id" invisible="1"/>
+                <field name="category_id" invisible="1"/>
+                <field name="payment_method_id" invisible="1"/>
+
+                <!-- Step 1: always-visible — choose type + see current debt -->
+                <group>
+                    <field name="payment_type" required="1"/>
+                    <field name="current_debt" class="fw-bold"
+                           options="{'currency_field': 'company_currency_id'}"/>
+                </group>
+
+                <!-- Step 2: revealed once a Payment Type is chosen -->
+                <group invisible="not payment_type">
+                    <field name="create_charge"/>
+                    <field name="charge_amount"
+                           invisible="not create_charge"
+                           required="create_charge"
+                           options="{'currency_field': 'register_currency_id'}"/>
+                    <field name="paid_now"
+                           options="{'currency_field': 'register_currency_id'}"/>
+                    <field name="register_id" options="{'no_create': True}"
+                           required="payment_type in ['full', 'deposit']"/>
+                    <field name="promise_due_date"
+                           invisible="payment_type != 'deposit'"/>
+                    <field name="note"
+                           invisible="payment_type != 'deposit'"
+                           placeholder="Optional note..."/>
+                </group>
+
+                <footer>
+                    <button name="action_confirm" type="object"
+                            string="Confirm" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

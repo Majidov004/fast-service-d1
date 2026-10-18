@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_training_exam_user,access_training_exam_user,model_training_exam,base.group_system,1,1,1,1
+access_training_exam_student_line_user,access_training_exam_student_line_user,model_training_exam_student_line,base.group_system,1,1,1,1
+access_training_exam_answer_user,access_training_exam_answer_user,model_training_exam_answer,base.group_system,1,1,1,1

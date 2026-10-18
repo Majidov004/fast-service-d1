@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================== -->
+    <!-- ROLE LINE FORM VIEW (popup şəklində açılır)        -->
+    <!-- ================================================== -->
+    <record id="access_role_line_view_form" model="ir.ui.view">
+        <field name="name">access.role.line.form</field>
+        <field name="model">access.role.line</field>
+        <field name="arch" type="xml">
+            <form string="Vəzifə İcazə Sətri">
+                <sheet>
+                    <group>
+                        <group string="Model">
+                            <field name="model_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="CRUD İcazələri">
+                            <field name="perm_read" widget="boolean_toggle"/>
+                            <field name="perm_write" widget="boolean_toggle"/>
+                            <field name="perm_create" widget="boolean_toggle"/>
+                            <field name="perm_unlink" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group string="Record Filter (hər üzv hansı sənədləri görsün?)">
+                        <field name="filter_mode" widget="radio"/>
+                        <field name="user_field_id"
+                               invisible="filter_mode == 'all'"
+                               options="{'no_create': True, 'no_open': True}"
+                               help="Boş qoyulsa avtomatik 'create_uid' işlədilir"/>
+                    </group>
+
+                    <group string="Əlavə görünən userlər"
+                           invisible="filter_mode != 'own_plus'">
+                        <field name="visible_user_ids"
+                               widget="many2many_tags"
+                               options="{'no_create': True}"
+                               domain="[('id', '!=', 1)]"
+                               nolabel="1" colspan="2"/>
+                        <div colspan="2" class="text-muted">
+                            <i class="fa fa-info-circle me-1"/>
+                            Üzvlər öz sənədlərindən başqa burada seçilən
+                            userlərin sənədlərini də görəcək.
+                        </div>
+                    </group>
+
+                    <group string="Status Filteri (hansı statuslarda olan sənədlər görünsün?)">
+                        <field name="status_field_id"
+                               options="{'no_create': True, 'no_open': True}"
+                               help="Yalnız selection tipli sahələr göstərilir"/>
+                        <field name="available_values_hint"
+                               readonly="1"
+                               invisible="not status_field_id"
+                               help="Seçilən sahənin dəyərləri — aşağıdakı siyahıya bu dəyərləri əlavə edin"/>
+                        <field name="status_value_ids"
+                               invisible="not status_field_id"
+                               nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="value"
+                                       string="Status Dəyəri"
+                                       required="1"
+                                       placeholder="məs. draft, planned, done"/>
+                            </list>
+                        </field>
+                        <div colspan="2" class="text-muted" invisible="not status_field_id">
+                            <i class="fa fa-info-circle me-1"/>
+                            Yalnız yuxarıda göstərilən dəyərlərdən olan sənədlər
+                            görünəcək. Record filter ilə <b>AND</b> şərti kimi işləyir.
+                        </div>
+                    </group>
+
+                    <group string="Texniki məlumat (avtomatik)">
+                        <field name="access_id" readonly="1"/>
+                        <field name="rule_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- ROLE FORM VIEW                                      -->
+    <!-- ================================================== -->
+    <record id="access_role_view_form" model="ir.ui.view">
+        <field name="name">access.role.form</field>
+        <field name="model">access.role</field>
+        <field name="arch" type="xml">
+            <form string="İcazə Vəzifəsi">
+                <header>
+                    <button name="action_apply"
+                            string="İcazələri Tətbiq Et"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-check"/>
+                    <button name="action_discover_dependencies"
+                            string="Asılılıqları Tap"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-sitemap"
+                            help="Sətirlərdəki modellərin form/wizard asılılıqlarını avtomatik tapıb əlavə edir (əlaqəlilərə Oxu, wizard-lara Oxu+Yaz+Yarat)"/>
+                    <button name="action_reset"
+                            string="Sıfırla"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-undo"
+                            invisible="state != 'applied'"
+                            confirm="Bu vəzifənin bütün icazə qaydaları silinəcək. Davam edilsin?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,applied"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="məs. Müəllim"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="member_count"/>
+                            <field name="line_count"/>
+                        </group>
+                        <group>
+                            <field name="last_apply_date" readonly="1"/>
+                            <field name="note" placeholder="Qeydlər..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Üzvlər" name="members">
+                            <field name="member_user_ids"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   domain="[('id', '!=', 1)]"/>
+                            <div class="text-muted mt-2">
+                                <i class="fa fa-info-circle me-1"/>
+                                Bu vəzifədə olan istifadəçilər. Üzvlüyü buradan
+                                və ya birbaşa istifadəçi formasından idarə etmək olar.
+                                Tətbiqdən sonra dəyişikliklər dərhal təsir edir.
+                            </div>
+                        </page>
+
+                        <page string="İcazə Sətirləri" name="lines">
+                            <field name="line_ids" context="{'default_is_dependency': False}">
+                                <list>
+                                    <field name="model_id"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           string="Model"/>
+                                    <field name="filter_mode" string="Filter"/>
+                                    <field name="visible_user_ids"
+                                           widget="many2many_tags"
+                                           string="Əlavə userlər"
+                                           options="{'no_create': True}"
+                                           optional="show"/>
+                                    <field name="perm_read" widget="boolean_toggle" string="Oxu"/>
+                                    <field name="perm_write" widget="boolean_toggle" string="Yaz"/>
+                                    <field name="perm_create" widget="boolean_toggle" string="Yarat"/>
+                                    <field name="perm_unlink" widget="boolean_toggle" string="Sil"/>
+                                    <field name="active" widget="boolean_toggle" string="Aktiv" optional="show"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                <i class="fa fa-info-circle me-1"/>
+                                Əsas modelləri burada əlavə et, sonra yuxarıdakı
+                                <b>"Asılılıqları Tap"</b> düyməsinə bas — lazımi alt
+                                modellər <b>"Alt Asılılıqlar"</b> tabına avtomatik düşəcək.
+                            </div>
+                        </page>
+
+                        <page string="Alt Asılılıqlar (avtomatik)" name="dependencies">
+                            <field name="dependency_line_ids" context="{'default_is_dependency': True}">
+                                <list editable="bottom">
+                                    <field name="model_id"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           string="Model"/>
+                                    <field name="filter_mode" string="Filter"/>
+                                    <field name="perm_read" widget="boolean_toggle" string="Oxu"/>
+                                    <field name="perm_write" widget="boolean_toggle" string="Yaz"/>
+                                    <field name="perm_create" widget="boolean_toggle" string="Yarat"/>
+                                    <field name="perm_unlink" widget="boolean_toggle" string="Sil"/>
+                                    <field name="active" widget="boolean_toggle" string="Aktiv" optional="show"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                <i class="fa fa-info-circle me-1"/>
+                                Bu tab <b>"Asılılıqları Tap"</b> düyməsi ilə avtomatik
+                                doldurulur — əsas modellərin form/wizard asılılıqları
+                                (əlaqəlilərə Oxu, wizard-lara Oxu+Yaz+Yarat). Yoxla,
+                                lazımsızı sil, sonra <b>"İcazələri Tətbiq Et"</b>.
+                            </div>
+                        </page>
+                    </notebook>
+
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="fa fa-info-circle me-1"/>
+                        <strong>Necə işləyir?</strong>
+                        <ol class="mb-0">
+                            <li>Vəzifə adını yazın (məs. Müəllim)</li>
+                            <li><b>Üzvlər</b> tabında istifadəçiləri seçin
+                                (və ya istifadəçi formasından vəzifə verin)</li>
+                            <li><b>İcazə Sətirləri</b>ndə model + CRUD + filter təyin edin</li>
+                            <li><b>İcazələri Tətbiq Et</b> düyməsinə basın</li>
+                        </ol>
+                        <small class="text-muted">
+                            <b>Fərdi istisna?</b> Bir istifadəçiyə vəzifədən fərqli/əlavə
+                            icazə lazımdırsa — <i>İcazə İdarəetməsi → İstifadəçi İcazələri</i>
+                            bölməsindən həmin istifadəçiyə əlavə icazə verin. O, vəzifənin
+                            üstünə əlavə olunur (əlavə icazə və record filtri işləyir;
+                            vəzifənin verdiyi CRUD-u geri almaq üçün istifadəçini
+                            vəzifədən çıxarmaq lazımdır).
+                        </small>
+                    </div>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- ROLE LIST VIEW                                      -->
+    <!-- ================================================== -->
+    <record id="access_role_view_tree" model="ir.ui.view">
+        <field name="name">access.role.list</field>
+        <field name="model">access.role</field>
+        <field name="arch" type="xml">
+            <list string="İcazə Vəzifələri"
+                  decoration-success="state == 'applied'"
+                  decoration-muted="state == 'draft'">
+                <field name="name"/>
+                <field name="member_count" string="Üzv sayı"/>
+                <field name="line_count" string="Sətir sayı"/>
+                <field name="last_apply_date" string="Son tətbiq"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'applied'"
+                       decoration-warning="state == 'draft'"/>
+                <button name="action_apply"
+                        string="Tətbiq et"
+                        type="object"
+                        icon="fa-check"
+                        class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- SEARCH VIEW                                         -->
+    <!-- ================================================== -->
+    <record id="access_role_view_search" model="ir.ui.view">
+        <field name="name">access.role.search</field>
+        <field name="model">access.role</field>
+        <field name="arch" type="xml">
+            <search string="Axtarış">
+                <field name="name" string="Vəzifə"/>
+                <field name="member_user_ids" string="Üzv"/>
+                <separator/>
+                <filter name="filter_applied" string="Tətbiq edilib"
+                        domain="[('state', '=', 'applied')]"/>
+                <filter name="filter_draft" string="Layihə"
+                        domain="[('state', '=', 'draft')]"/>
+                <group expand="0" string="Qruplaşdır">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- ACTION                                              -->
+    <!-- ================================================== -->
+    <record id="action_access_role" model="ir.actions.act_window">
+        <field name="name">Vəzifələr (Rollar)</field>
+        <field name="res_model">access.role</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="access_role_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                İlk icazə vəzifəsini yaradın!
+            </p>
+            <p>
+                Bir vəzifə (məs. Müəllim) üçün icazələri bir dəfə təyin edin,
+                sonra istifadəçiləri həmin vəzifəyə əlavə edin — hamısı eyni
+                icazəni alır.
+            </p>
+        </field>
+    </record>
+
+
+    <!-- ================================================== -->
+    <!-- RES.USERS FORM — vəzifə təyini                      -->
+    <!-- ================================================== -->
+    <record id="view_users_form_access_role" model="ir.ui.view">
+        <field name="name">res.users.form.access.role</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="İcazə Vəzifələri" name="access_roles"
+                      groups="base.group_system">
+                    <field name="access_role_ids"
+                           widget="many2many_tags"
+                           options="{'no_create_edit': True}"/>
+                    <div class="text-muted mt-2">
+                        <i class="fa fa-info-circle me-1"/>
+                        Bu istifadəçiyə vəzifə təyin edin — vəzifənin bütün
+                        icazələrini avtomatik alacaq. Vəzifə dəyişdikdə icazələr
+                        dərhal yenilənir.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

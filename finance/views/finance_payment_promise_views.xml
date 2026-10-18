@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_finance_payment_promise_list" model="ir.ui.view">
+        <field name="name">finance.payment.promise.list</field>
+        <field name="model">finance.payment.promise</field>
+        <field name="arch" type="xml">
+            <list string="Payment Promises"
+                  decoration-danger="state == 'pending' and due_date &lt; current_date"
+                  decoration-warning="state == 'pending' and due_date == current_date"
+                  decoration-success="state == 'paid'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="due_date"/>
+                <field name="amount"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="responsible_user_id"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'pending'"
+                       decoration-success="state == 'paid'"/>
+                <button name="action_register_payment" type="object"
+                        string="Register Payment" icon="fa-money"
+                        invisible="state != 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_finance_payment_promise_form" model="ir.ui.view">
+        <field name="name">finance.payment.promise.form</field>
+        <field name="model">finance.payment.promise</field>
+        <field name="arch" type="xml">
+            <form string="Payment Promise">
+                <header>
+                    <button name="action_register_payment" type="object"
+                            string="Register Payment" class="btn-primary"
+                            invisible="state != 'pending'"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel" invisible="state != 'pending'"/>
+                    <button name="action_reset_pending" type="object"
+                            string="Reset to Pending" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="due_date"/>
+                            <field name="responsible_user_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id"/>
+                            <field name="amount"/>
+                            <field name="register_id"/>
+                            <field name="charge_id"/>
+                            <field name="cash_move_id" invisible="not cash_move_id"/>
+                        </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_finance_payment_promise_search" model="ir.ui.view">
+        <field name="name">finance.payment.promise.search</field>
+        <field name="model">finance.payment.promise</field>
+        <field name="arch" type="xml">
+            <search string="Payment Promises">
+                <field name="student_id"/>
+                <field name="responsible_user_id"/>
+                <filter name="filter_pending" string="Pending" domain="[('state', '=', 'pending')]"/>
+                <filter name="filter_overdue" string="Overdue"
+                        domain="[('state', '=', 'pending'), ('due_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_due_today" string="Due Today"
+                        domain="[('state', '=', 'pending'), ('due_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_paid" string="Paid" domain="[('state', '=', 'paid')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_student" string="Student" context="{'group_by': 'student_id'}"/>
+                    <filter name="group_responsible" string="Responsible" context="{'group_by': 'responsible_user_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_due" string="Due Date" context="{'group_by': 'due_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_finance_payment_promise" model="ir.actions.act_window">
+        <field name="name">Payment Promises</field>
+        <field name="res_model">finance.payment.promise</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_pending': 1}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_field_access_root"
+              name="Sahə Giriş Nəzarəti"
+              sequence="100"
+              groups="group_field_access_manager"
+              web_icon="field_access_control,static/description/icon.png"/>
+
+    <menuitem id="menu_field_access_config"
+              name="Konfiqurasiyalar"
+              parent="menu_field_access_root"
+              action="action_field_access_config"
+              sequence="10"/>
+</odoo>

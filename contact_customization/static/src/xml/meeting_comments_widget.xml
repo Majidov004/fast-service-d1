@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="contact_customization.MeetingCommentsWidget">
+    <div class="o_meeting_comments_wrapper">
+
+      <div t-if="state.groups.length === 0" class="o_meeting_empty">
+        No lesson comments yet.
+      </div>
+
+      <div t-foreach="state.groups" t-as="grp" t-key="grp.group_id || grp_index"
+           class="o_meeting_group">
+
+        <!-- Group header -->
+        <div class="o_meeting_group_header">
+          <span class="o_meeting_group_name">
+            <i class="fa fa-users me-1"/><t t-esc="grp.group_name"/>
+          </span>
+          <span t-if="grp.teacher_name" class="o_meeting_group_teacher">
+            <i class="fa fa-user-md me-1"/><t t-esc="grp.teacher_name"/>
+          </span>
+          <span class="o_meeting_group_count">
+            <t t-esc="grp.lessons.length"/>
+          </span>
+        </div>
+
+        <!-- Lesson comment cards -->
+        <div class="o_meeting_lessons">
+          <div t-foreach="grp.lessons" t-as="ls" t-key="ls.id" class="o_meeting_card">
+            <div class="o_meeting_card_head">
+              <span class="o_meeting_lesson_name">
+                <i class="fa fa-book me-1"/><t t-esc="ls.lesson_name"/>
+              </span>
+              <span class="o_meeting_lesson_meta">
+                <span t-if="ls.attendance === 'present'" class="o_att_badge o_att_present">Present</span>
+                <span t-if="ls.attendance === 'absent'" class="o_att_badge o_att_absent">Absent</span>
+                <span class="o_meeting_date"><i class="fa fa-clock-o me-1"/><t t-esc="ls.date"/></span>
+              </span>
+            </div>
+            <div class="o_meeting_card_body"><t t-esc="ls.comment"/></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </t>
+
+</templates>

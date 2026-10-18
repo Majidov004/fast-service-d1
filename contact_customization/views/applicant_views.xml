@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+
+    <!-- ── List View ─────────────────────────────────────────────────────── -->
+    <record id="view_applicant_list" model="ir.ui.view">
+      <field name="name">res.partner.applicant.list</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <list string="Applicants">
+          <field name="name"             string="Full Name"/>
+          <field name="phone"            string="Phone"/>
+          <field name="mobile"           string="Mobile"/>
+          <field name="email"            string="Email"/>
+          <field name="manager_id"       string="Registrar"/>
+          <field name="reference_source" string="Source"/>
+          <field name="expected_join_date" string="Expected Join Date"/>
+          <field name="applicant_state"  string="Status" widget="badge"
+                 decoration-info="applicant_state == 'interested'"
+                 decoration-warning="applicant_state in ('needs_to_be_called', 'no_answer', 'trial_no_contact')"
+                 decoration-primary="applicant_state == 'called'"
+                 decoration-success="applicant_state in ('planned_trial', 'paid')"
+                 decoration-danger="applicant_state == 'not_want'"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- ── Kanban View ───────────────────────────────────────────────────── -->
+    <record id="view_applicant_kanban" model="ir.ui.view">
+      <field name="name">res.partner.applicant.kanban</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <kanban default_group_by="applicant_state" class="o_kanban_small_column">
+          <field name="name"/>
+          <field name="phone"/>
+          <field name="mobile"/>
+          <field name="manager_id"/>
+          <field name="applicant_state"/>
+          <field name="no_answer_type_effective"/>
+          <field name="reference_source"/>
+          <templates>
+            <t t-name="card">
+              <div class="oe_kanban_global_click">
+                <strong><field name="name"/></strong>
+                <div t-if="record.applicant_state.value == 'No Answer' and record.no_answer_type_effective.value">
+                  <span class="badge rounded-pill text-bg-warning">
+                    <t t-esc="record.no_answer_type_effective.value"/>
+                  </span>
+                </div>
+                <div t-if="record.phone.value">
+                  📞 <field name="phone"/>
+                </div>
+                <div t-if="record.manager_id.value">
+                  👤 <field name="manager_id"/>
+                </div>
+                <div t-if="record.reference_source.value">
+                  🔗 <field name="reference_source"/>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+
+    <!-- ── Search View ───────────────────────────────────────────────────── -->
+    <record id="view_applicant_search" model="ir.ui.view">
+      <field name="name">res.partner.applicant.search</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <search string="Search Applicants">
+          <field name="name"       string="Name"/>
+          <field name="phone"      string="Phone"/>
+          <field name="email"      string="Email"/>
+          <field name="manager_id" string="Manager"/>
+
+          <!-- ── Today filter ──────────────────────────────────
+               Shows records where EITHER:
+                 • The applicant was created today  (create_date)
+                 • The expected join date is today  (expected_join_date)
+          ─────────────────────────────────────────────────────────────── -->
+          <filter name="today" string="Today"
+                  domain="['|',
+                      '&amp;', ('applicant_state', '=', 'remember'),
+                                ('expected_join_date', '=', context_today().strftime('%Y-%m-%d')),
+                      '&amp;', ('applicant_state', '!=', 'remember'),
+                                '|',
+                                    '&amp;', ('create_date', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                                              ('create_date', '&lt;', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d')),
+                                    ('expected_join_date', '=', context_today().strftime('%Y-%m-%d'))
+                  ]"/>
+          <!-- ── This Week filter (default) ──────────────────────────────
+               Same logic as Today, widened to the current week
+               (Monday → Sunday, based on the user's locale-independent
+               ISO week: today - weekday() … +7 days).
+          ─────────────────────────────────────────────────────────────── -->
+          <filter name="week" string="This Week"
+                  domain="['|',
+                      '&amp;', ('applicant_state', '=', 'remember'),
+                                '&amp;', ('expected_join_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                          ('expected_join_date', '&lt;', (context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d')),
+                      '&amp;', ('applicant_state', '!=', 'remember'),
+                                '|',
+                                    '&amp;', ('create_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                              ('create_date', '&lt;', (context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d')),
+                                    '&amp;', ('expected_join_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
+                                              ('expected_join_date', '&lt;', (context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d'))
+                  ]"/>
+          <separator/>
+
+          <filter name="interested"         string="Interested"
+                  domain="[('applicant_state','=','interested')]"/>
+          <filter name="needs_to_be_called" string="Needs to be Called"
+                  domain="[('applicant_state','=','needs_to_be_called')]"/>
+          <filter name="called"             string="Messaged"
+                  domain="[('applicant_state','=','called')]"/>
+          <filter name="no_answer"          string="No Answer"
+                  domain="[('applicant_state','=','no_answer')]"/>
+          <filter name="planned_trial"      string="Planned Trial"
+                  domain="[('applicant_state','=','planned_trial')]"/>
+          <filter name="trial_no_contact"   string="Trial – No Contact"
+                  domain="[('applicant_state','=','trial_no_contact')]"/>
+          <filter name="not_want"           string="Not Want"
+                  domain="[('applicant_state','=','not_want')]"/>
+          <filter name="paid"               string="Paid"
+                  domain="[('applicant_state','=','paid')]"/>
+
+          <separator/>
+          <group string="Group By">
+            <filter name="group_by_status"    string="Status"
+                    context="{'group_by': 'applicant_state'}"/>
+            <filter name="group_by_manager"   string="Manager"
+                    context="{'group_by': 'manager_id'}"/>
+            <filter name="group_by_reference" string="Source"
+                    context="{'group_by': 'reference_source'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- ── Action ────────────────────────────────────────────────────────── -->
+    <record id="action_applicants" model="ir.actions.act_window">
+      <field name="name">Applicants</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">kanban,list,form</field>
+      <field name="domain">[('is_applicant', '=', True), ('applicant_state', '!=', 'planned_remember')]</field>
+      <field name="context">{'default_is_applicant': True, 'search_default_week': 1}</field>
+      <field name="search_view_id" ref="view_applicant_search"/>
+      <field name="view_ids" eval="[
+        (5, 0, 0),
+        (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_applicant_kanban')}),
+        (0, 0, {'view_mode': 'list',   'view_id': ref('view_applicant_list')}),
+      ]"/>
+    </record>
+
+    <!-- ── Menu ──────────────────────────────────────────────────────────── -->
+    <record id="contacts.menu_contacts" model="ir.ui.menu">
+        <field name="name">Applicants</field>
+    </record>
+
+    <menuitem id="menu_applicants_list"
+              name="Applicants"
+              parent="contacts.menu_contacts"
+              action="action_applicants"
+              sequence="1"/>
+
+  </data>
+</odoo>

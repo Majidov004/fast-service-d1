@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+  <!-- Mini lesson cards inside the Meeting tab -->
+  <t t-name="training_management.TrainingMeetingWidget">
+    <div class="o_tm_meeting">
+      <div t-if="state.lessons.length === 0" class="o_tm_empty">
+        No lessons yet. Lessons will appear here after you Start the group.
+      </div>
+
+      <div t-else="" class="o_tm_cards">
+        <div t-foreach="state.lessons" t-as="l" t-key="l.id"
+             t-att-class="'o_tm_card ' + (l.state === 'completed' ? 'o_tm_done' : 'o_tm_scheduled') + (l.is_extra ? ' o_tm_extra' : '')"
+             t-on-click="() => this.openLesson(l)">
+          <div class="o_tm_card_top">
+            <span class="o_tm_num">#<t t-esc="l.number_display"/></span>
+            <span t-if="l.is_extra" class="o_tm_badge o_tm_badge_extra">Extra</span>
+            <span t-if="l.state === 'completed'" class="o_tm_badge o_tm_badge_done">Held</span>
+            <span t-else="" class="o_tm_badge o_tm_badge_sched">Not Held</span>
+            <button t-if="l.is_extra and l.state !== 'completed'"
+                    class="o_tm_del btn btn-sm btn-link text-danger p-0"
+                    t-on-click="(ev) => this.deleteLesson(l, ev)"
+                    title="Delete extra lesson">
+              <i class="fa fa-trash"/>
+            </button>
+          </div>
+          <div class="o_tm_card_name"><t t-esc="l.name"/></div>
+          <div class="o_tm_card_meta">
+            <span><i class="fa fa-calendar me-1"/><t t-esc="l.date"/></span>
+            <span><i class="fa fa-clock-o me-1"/><t t-esc="l.time"/></span>
+          </div>
+          <div class="o_tm_card_foot">
+            <span class="o_tm_present"><i class="fa fa-check me-1"/><t t-esc="l.present_count"/></span>
+            <span class="o_tm_absent"><i class="fa fa-times me-1"/><t t-esc="l.absent_count"/></span>
+            <span class="o_tm_total"><i class="fa fa-users me-1"/><t t-esc="l.student_count"/></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </t>
+
+  <!-- Lesson popup -->
+  <t t-name="training_management.MeetingLessonDialog">
+    <Dialog title="dialogTitle" size="'lg'">
+      <div t-if="state.loading" class="o_tm_dialog_loading">Loading…</div>
+
+      <!-- Completion question: new topic tomorrow? -->
+      <div t-elif="state.askNextTopic" class="o_tm_question">
+        <h4 class="o_tm_question_title">Will a new topic be covered tomorrow?</h4>
+        <p class="o_tm_question_hint">
+          If you choose <b>No</b>, an extra lesson (e.g. 5.1) is created to repeat
+          the same topic and every following lesson shifts forward by one slot.
+        </p>
+      </div>
+
+      <div t-else="" class="o_tm_dialog">
+        <div class="o_tm_dialog_head">
+          <span><i class="fa fa-calendar me-1"/><t t-esc="state.lesson.date"/></span>
+          <span><i class="fa fa-clock-o me-1"/><t t-esc="state.lesson.time"/></span>
+          <span t-if="state.lesson.state === 'completed'" class="o_tm_badge o_tm_badge_done">Held</span>
+          <span t-else="" class="o_tm_badge o_tm_badge_sched">Not Held</span>
+        </div>
+
+        <div class="o_tm_dialog_body">
+          <!-- left: student list (select one at a time) -->
+          <div class="o_tm_students">
+            <div t-if="state.lesson.students.length === 0" class="o_tm_empty">No students.</div>
+            <div t-foreach="state.lesson.students" t-as="s" t-key="s.line_id"
+                 t-att-class="'o_tm_student' + (s.line_id === state.selectedLineId ? ' o_tm_active' : '')"
+                 t-on-click="() => this.selectStudent(s.line_id)">
+              <span class="o_tm_student_name"><t t-esc="s.student_name"/></span>
+              <span t-att-class="'o_tm_dot o_tm_dot_' + s.attendance"/>
+            </div>
+          </div>
+
+          <!-- right: editor for the selected student -->
+          <div t-if="selectedStudent" class="o_tm_editor">
+            <h5 class="o_tm_editor_name" t-esc="selectedStudent.student_name"/>
+
+            <div class="o_tm_att_toggle">
+              <button type="button"
+                      t-att-class="'btn btn-sm ' + (selectedStudent.attendance === 'present' ? 'btn-success' : 'btn-outline-success')"
+                      t-on-click="() => this.setAttendance('present')">Present</button>
+              <button type="button"
+                      t-att-class="'btn btn-sm ' + (selectedStudent.attendance === 'absent' ? 'btn-danger' : 'btn-outline-danger')"
+                      t-on-click="() => this.setAttendance('absent')">Absent</button>
+            </div>
+
+            <label class="o_tm_label">Student Note</label>
+            <textarea class="form-control" rows="4"
+                      t-att-value="selectedStudent.comment"
+                      t-on-change="onComment"/>
+            <div class="o_tm_dates"
+                 t-if="selectedStudent.comment_create_date or selectedStudent.comment_write_date">
+              <span t-if="selectedStudent.comment_create_date">
+                <i class="fa fa-plus-circle me-1"/>Created: <t t-esc="selectedStudent.comment_create_date"/>
+              </span>
+              <span t-if="selectedStudent.comment_write_date">
+                <i class="fa fa-pencil me-1"/>Edited: <t t-esc="selectedStudent.comment_write_date"/>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="o_tm_lesson_note">
+          <label class="o_tm_label">Lesson Note (Teacher)</label>
+          <textarea class="form-control" rows="3"
+                    t-att-value="state.lesson.teacher_comment"
+                    t-on-change="onTeacherComment"/>
+          <div class="o_tm_dates"
+               t-if="state.lesson.teacher_comment_create_date or state.lesson.teacher_comment_write_date">
+            <span t-if="state.lesson.teacher_comment_create_date">
+              <i class="fa fa-plus-circle me-1"/>Created: <t t-esc="state.lesson.teacher_comment_create_date"/>
+            </span>
+            <span t-if="state.lesson.teacher_comment_write_date">
+              <i class="fa fa-pencil me-1"/>Edited: <t t-esc="state.lesson.teacher_comment_write_date"/>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <t t-set-slot="footer">
+        <t t-if="state.askNextTopic">
+          <button class="btn btn-success" t-att-disabled="state.saving"
+                  t-on-click="() => this.confirmNextTopic(true)">Yes</button>
+          <button class="btn btn-warning" t-att-disabled="state.saving"
+                  t-on-click="() => this.confirmNextTopic(false)">No</button>
+          <button class="btn btn-secondary" t-att-disabled="state.saving"
+                  t-on-click="backFromQuestion">Back</button>
+        </t>
+        <t t-else="">
+          <button class="btn btn-primary" t-on-click="onSave" t-att-disabled="state.saving">
+            <t t-esc="saveLabel"/>
+          </button>
+          <button class="btn btn-secondary" t-on-click="() => this.props.close()">Close</button>
+        </t>
+      </t>
+    </Dialog>
+  </t>
+
+</templates>

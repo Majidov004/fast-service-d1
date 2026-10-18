@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- ── List View ─────────────────────────────────────────────────────── -->
+    <record id="view_student_list" model="ir.ui.view">
+      <field name="name">res.partner.student.list</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <list string="Students">
+          <field name="name"             string="Full Name"/>
+          <field name="phone"            string="Phone"/>
+          <field name="mobile"           string="Mobile"/>
+          <field name="email"            string="Email"/>
+          <field name="manager_id"       string="Registrar"/>
+          <field name="teacher_id"       string="Teacher"/>
+          <field name="reference_source" string="Source"/>
+          <field name="is_waiting_student" string="Waiting" widget="boolean_toggle"
+                 optional="show"/>
+          <field name="lead_state"       string="Status" widget="badge"
+                 decoration-info="lead_state == 'lesson_not_planned'"
+                 decoration-warning="lead_state == 'lesson_planned'"
+                 decoration-success="lead_state == 'lesson_complete'"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- ── Kanban View ───────────────────────────────────────────────────── -->
+    <record id="view_student_kanban" model="ir.ui.view">
+      <field name="name">res.partner.student.kanban</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <kanban default_group_by="lead_state" class="o_kanban_small_column">
+          <field name="name"/>
+          <field name="phone"/>
+          <field name="mobile"/>
+          <field name="manager_id"/>
+          <field name="teacher_id"/>
+          <field name="lead_state"/>
+          <field name="reference_source"/>
+          <templates>
+            <t t-name="card">
+              <div class="oe_kanban_global_click">
+                <strong><field name="name"/></strong>
+                <div t-if="record.phone.value">
+                  📞 <field name="phone"/>
+                </div>
+                <div t-if="record.manager_id.value">
+                  🧑‍💼 <field name="manager_id"/>
+                </div>
+                <div t-if="record.teacher_id.value">
+                  👤 <field name="teacher_id"/>
+                </div>
+                <div t-if="record.reference_source.value">
+                  🔗 <field name="reference_source"/>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+
+    <!-- ── Search View ───────────────────────────────────────────────────── -->
+    <record id="view_student_search" model="ir.ui.view">
+      <field name="name">res.partner.student.search</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <search string="Search Students">
+          <field name="name"       string="Name"/>
+          <field name="phone"      string="Phone"/>
+          <field name="email"      string="Email"/>
+          <field name="manager_id" string="Manager"/>
+          <field name="teacher_id" string="Teacher"/>
+
+          <filter name="waiting" string="Waiting (no group yet)"
+                  domain="[('is_waiting_student','=',True)]"/>
+          <separator/>
+          <filter name="lesson_not_planned" string="Lesson not Planned"
+                  domain="[('lead_state','=','lesson_not_planned')]"/>
+          <filter name="lesson_planned"     string="Lesson Planned"
+                  domain="[('lead_state','=','lesson_planned')]"/>
+          <filter name="lesson_complete"    string="Lesson Complete"
+                  domain="[('lead_state','=','lesson_complete')]"/>
+
+          <separator/>
+          <group string="Group By">
+            <filter name="group_by_status"    string="Status"
+                    context="{'group_by': 'lead_state'}"/>
+            <filter name="group_by_manager"   string="Manager"
+                    context="{'group_by': 'manager_id'}"/>
+            <filter name="group_by_teacher"   string="Teacher"
+                    context="{'group_by': 'teacher_id'}"/>
+            <filter name="group_by_reference" string="Source"
+                    context="{'group_by': 'reference_source'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- ── Action ────────────────────────────────────────────────────────── -->
+    <record id="action_students" model="ir.actions.act_window">
+      <field name="name">Students</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">kanban,list,form</field>
+      <field name="domain">[('is_student', '=', True)]</field>
+      <field name="context">{'default_is_student': True}</field>
+      <field name="search_view_id" ref="view_student_search"/>
+      <field name="view_ids" eval="[
+        (5, 0, 0),
+        (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_student_kanban')}),
+        (0, 0, {'view_mode': 'list',   'view_id': ref('view_student_list')}),
+      ]"/>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_training_group_tree" model="ir.ui.view">
+        <field name="name">training.group.tree</field>
+        <field name="model">training.group</field>
+        <field name="arch" type="xml">
+            <list string="Training Groups">
+                <field name="name"/>
+                <field name="teacher_id"/>
+                <field name="training_start_date"/>
+                <field name="lesson_count"/>
+                <field name="student_count"/>
+                <field name="state" widget="badge" decoration-info="state == 'pending'" decoration-success="state == 'in_progress'" decoration-muted="state == 'done'"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_training_group_form" model="ir.ui.view">
+        <field name="name">training.group.form</field>
+        <field name="model">training.group</field>
+        <field name="arch" type="xml">
+            <form string="Training Group" save_manually="1">
+                <header>
+                    <button name="action_start" string="Start" type="object" 
+                            class="oe_highlight" 
+                            invisible="state != 'pending'"/>
+                    <button name="action_modify" string="Modify" type="object"
+                            class="btn-secondary"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_complete" string="Complete" type="object"
+                            class="oe_highlight"
+                            confirm="Mark this training group as Completed?"
+                            invisible="state != 'in_progress'"/>
+                    <button string="Save" special="save" class="btn-primary"/>
+                    <button string="Discard" special="cancel" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Group Name…"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="teacher_id"/>
+                            <field name="lesson_count"/>
+                            <field name="training_start_date"/>
+                            <field name="start_day_of_week" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="student_count"/>
+                            <field name="create_date" string="Created On" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <!-- Schedule Tab -->
+                        <page string="Schedule" name="schedule">
+                            <field name="schedule_line_ids">
+                                <list editable="bottom">
+                                    <field name="day_of_week"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <!-- Students Tab -->
+                        <page string="Students" name="students">
+                            <field name="student_line_ids">
+                                <list editable="bottom">
+                                    <field name="student_id"/>
+                                    <field name="phone"/>
+                                    <field name="mobile"/>
+                                    <field name="lesson_count"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Meeting Tab -->
+                        <page string="Meeting" name="meeting">
+                            <field name="meeting_view" widget="training_meeting_widget" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_training_group_search" model="ir.ui.view">
+        <field name="name">training.group.search</field>
+        <field name="model">training.group</field>
+        <field name="arch" type="xml">
+            <search string="Search Training Groups">
+                <field name="name"/>
+                <field name="teacher_id"/>
+                <field name="training_start_date"/>
+                <filter string="Waiting" name="filter_pending" domain="[('state', '=', 'pending')]"/>
+                <filter string="Started" name="filter_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Teacher" name="group_teacher" context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Start Date" name="group_start_date" context="{'group_by': 'training_start_date'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_training_group" model="ir.actions.act_window">
+        <field name="name">Training Groups</field>
+        <field name="res_model">training.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_group_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first training group
+            </p>
+            <p>
+                Click the create button to set up a new training group with schedule and students.
+            </p>
+        </field>
+    </record>
+
+    <!-- Delete action bound to Action menu -->
+    <record id="action_training_group_delete_wizard" model="ir.actions.act_window">
+        <field name="name">Delete Group</field>
+        <field name="res_model">training.group.delete.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_group_id': active_id}</field>
+        <field name="binding_model_id" ref="model_training_group"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>
